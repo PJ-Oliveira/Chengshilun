@@ -1,197 +1,1316 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jogo de Hanzis</title>
-    <style>
-        /* Estilo geral do corpo */
-        body {
-            background-color: #e2be8b;
-            font-family: Arial, sans-serif;
-            color: #333;
-            margin: 0;
-            padding: 0;
-            font-size: 22px;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jogo de Hanzis</title>
+<style>
+body {
+background-color: #e2be8b;
+font-family: Arial, sans-serif;
+color: #333;
+margin: 0;
+padding: 0;
+font-size: 22px;
+min-height: 100vh;
+display: flex;
+justify-content: center;
+align-items: center;
+}
 
-        /* Estilo do contêiner principal */
-        .content {
-            text-align: center;
-            padding: 30px;
-            max-width: 800px;
-            background-color: #f7e4d0;
-            border-radius: 15px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-            width: 100%;
-        }
+.content {
+text-align: center;
+padding: 30px;
+max-width: 800px;
+background-color: #f7e4d0;
+border-radius: 15px;
+box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+width: 100%;
+}
 
-        /* Estilo do título */
-        h1 {
-            color: #4a90e2;
-        }
+h1 {
+color: #4a90e2;
+}
 
-        /* Destaque para o Hanzi */
-        .hanzi {
-            font-size: 50px;
-            font-weight: bold;
-            margin: 20px 0;
-        }
+.hanzi {
+font-size: 50px;
+font-weight: bold;
+margin: 20px 0;
+}
 
-        /* Botões de resposta */
-        .answers {
-            margin-top: 20px;
-        }
+.answers {
+margin-top: 20px;
+}
 
-        .answers button {
-            background-color: #4caf50;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            margin: 5px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 20px;
-        }
+.answers button {
+background-color: #4caf50;
+color: white;
+border: none;
+padding: 10px 20px;
+margin: 5px;
+border-radius: 5px;
+cursor: pointer;
+font-size: 20px;
+}
 
-        .answers button:hover {
-            background-color: #45a049;
-        }
+.answers button:hover {
+background-color: #45a049;
+}
 
-        /* Estilo da seção de pontuação */
-        .score {
-            margin-top: 20px;
-            font-size: 20px;
-            display: flex;
-            justify-content: space-between;
-        }
+.score {
+margin-top: 20px;
+font-size: 20px;
+display: flex;
+justify-content: space-between;
+}
 
-        .score p {
-            margin: 0;
-            padding: 0 10px;
-        }
-    </style>
+.score p {
+margin: 0;
+padding: 0 10px;
+}
+</style>
 </head>
-
 <body>
-    <div class="content">
-        <h1>Estude os Hanzis do Satya Siddhi Shastra</h1>
-        <p class="hanzi" id="hanzi"></p>
-        <p><strong>Pinyin:</strong> <span id="pinyin"></span></p>
-        <div class="answers" id="answers"></div>
-        <div class="score">
-            <p>Erros: <span id="mistakes">0</span></p>
-            <p>Meta Atual: <span id="goal">63</span></p>
-            <p>Acertos: <span id="score">0</span></p>
-        </div>
-    </div>
+<div class="content">
+<h1>Estude os Hanzis do Satya Siddhi Shastra</h1>
+<p class="hanzi" id="hanzi"></p>
+<p><strong>Pinyin:</strong> <span id="pinyin"></span></p>
+<div class="answers" id="answers"></div>
+<div class="score">
+<p>Erros: <span id="mistakes">0</span></p>
+<p>Meta Atual: <span id="goal">63</span></p>
+<p>Acertos: <span id="score">0</span></p>
+</div>
+</div>
 
-    <script>
-        // Array de dados com Hanzis, significados e Pinyin
-        const data = [
-            { "Hanzis": "不", "Significados": "Não, Negativo", "Piyins": "Bù" },
-            { "Hanzis": "問", "Significados": "Perguntar, Investigar", "Piyins": "Wèn" },
-            { "Hanzis": "曰", "Significados": "Dizer, Falar", "Piyins": "Yuē" },
-            // Adicione outros Hanzis aqui
-        ];
+<script>
+const data = [
+{
+  "Hanzis": "不",
+  "Significados": "Não, Negativo",
+  "Piyins": "Bù"
+},
+{
+  "Hanzis": "問",
+  "Significados": "Perguntar, Investigar",
+  "Piyins": "Wèn"
+},
+{
+  "Hanzis": "曰",
+  "Significados": "Dizer, Falar",
+  "Piyins": "Yuē"
+},
+{
+  "Hanzis": "故",
+  "Significados": "Portanto, Em função disso, Por causa disso",
+  "Piyins": "Gù"
+},
+{
+  "Hanzis": "是",
+  "Significados": "É, Ser, De fato, Isso/Aquilo",
+  "Piyins": "Shì"
+},
+{
+  "Hanzis": "無",
+  "Significados": "Sem, Faltar, Não ter",
+  "Piyins": "Wú"
+},
+{
+  "Hanzis": "有",
+  "Significados": "Ter, Existir, Com",
+  "Piyins": "Yǒu"
+},
+{
+  "Hanzis": "生",
+  "Significados": "Nascer, Crescer, Cru",
+  "Piyins": "Shēng"
+},
+{
+  "Hanzis": "又",
+  "Significados": "Novamente, Também, E",
+  "Piyins": "Yòu"
+},
+{
+  "Hanzis": "如",
+  "Significados": "Como se, Como, Se",
+  "Piyins": "Rú"
+},
+{
+  "Hanzis": "說",
+  "Significados": "Explicar, Falar, Doutrina",
+  "Piyins": "Shuō"
+},
+{
+  "Hanzis": "中",
+  "Significados": "Em meio a, Dentro, No meio, Enquanto",
+  "Piyins": "Zhōng"
+},
+{
+  "Hanzis": "者",
+  "Significados": "Isso, Aquilo, Alguém",
+  "Piyins": "Zhě"
+},
+{
+  "Hanzis": "顛倒",
+  "Significados": "De cabeça pra baixo, Reverter, Ao contrário",
+  "Piyins": "Diāndǎo"
+},
+{
+  "Hanzis": "名",
+  "Significados": "Nome, Nomear",
+  "Piyins": "Míng"
+},
+{
+  "Hanzis": "以",
+  "Significados": "Por meio de, Portanto, Em função disso",
+  "Piyins": "Yǐ"
+},
+{
+  "Hanzis": "若",
+  "Significados": "Se, Parecer, Caso haja isso, Como se",
+  "Piyins": "Ruò"
+},
+{
+  "Hanzis": "心",
+  "Significados": "Mente, Citta, Coração",
+  "Piyins": "Xīn"
+},
+{
+  "Hanzis": "為",
+  "Significados": "Porquê, Razão, Por, Ser",
+  "Piyins": "Wèi"
+},
+{
+  "Hanzis": "等",
+  "Significados": "Etc.",
+  "Piyins": "Děng"
+},
+{
+  "Hanzis": "法",
+  "Significados": "Dharma, Método, Lei",
+  "Piyins": "Fǎ"
+},
+{
+  "Hanzis": "人",
+  "Significados": "Pessoa",
+  "Piyins": "Rén"
+},
+{
+  "Hanzis": "得",
+  "Significados": "Obter, Adquirir, Ganho",
+  "Piyins": "Dé"
+},
+{
+  "Hanzis": "知",
+  "Significados": "Saber, Compreender, Cognizar",
+  "Piyins": "Zhī"
+},
+{
+  "Hanzis": "亦",
+  "Significados": "Também, De Igual Modo, Equivalente",
+  "Piyins": "Yì"
+},
+{
+  "Hanzis": "能",
+  "Significados": "Ser Capaz, Poder, Habilidade",
+  "Piyins": "Néng"
+},
+{
+  "Hanzis": "何",
+  "Significados": "O que, Como, Por quê",
+  "Piyins": "Hé"
+},
+{
+  "Hanzis": "所",
+  "Significados": "Voz Passiva, Lugar, Localização",
+  "Piyins": "Suǒ"
+},
+{
+  "Hanzis": "則",
+  "Significados": "Mas, Então, Regras",
+  "Piyins": "Zé"
+},
+{
+  "Hanzis": "見",
+  "Significados": "Ver, Encontrar, Aparecer",
+  "Piyins": "Jiàn"
+},
+{
+  "Hanzis": "此",
+  "Significados": "Esse(a), Nesse Caso, Então",
+  "Piyins": "Cǐ"
+},
+{
+  "Hanzis": "一",
+  "Significados": "Um, Singular, Inteiro",
+  "Piyins": "Yī"
+},
+{
+  "Hanzis": "相",
+  "Significados": "Lakṣana , Recíproco, Interdependente, Nimitta",
+  "Piyins": "Xiàng"
+},
+{
+  "Hanzis": "諸",
+  "Significados": "Vários, Muitos",
+  "Piyins": "Zhū"
+},
+{
+  "Hanzis": "色",
+  "Significados": "Cor, Forma, Rupa",
+  "Piyins": "Sè"
+},
+{
+  "Hanzis": "因",
+  "Significados": "Causa, Razão, Justificativa",
+  "Piyins": "Yīn"
+},
+{
+  "Hanzis": "業",
+  "Significados": "Karma, Sementes",
+  "Piyins": "Yè"
+},
+{
+  "Hanzis": "行",
+  "Significados": "Praticar, Caminhar, Agir",
+  "Piyins": "Xíng"
+},
+{
+  "Hanzis": "應",
+  "Significados": "Responder, Lidar, Deveria",
+  "Piyins": "Yìng"
+},
+{
+  "Hanzis": "緣",
+  "Significados": "Causa, Razão, Dependência",
+  "Piyins": "Yuán"
+},
+{
+  "Hanzis": "答",
+  "Significados": "Responder, Assentir",
+  "Piyins": "Dá"
+},
+{
+  "Hanzis": "言",
+  "Significados": "Palavras, Dizer, Falar",
+  "Piyins": "Yán"
+},
+{
+  "Hanzis": "滅",
+  "Significados": "Extinguir, Cessar",
+  "Piyins": "Miè"
+},
+{
+  "Hanzis": "受",
+  "Significados": "Suportar, Receber, Pegar",
+  "Piyins": "Shòu"
+},
+{
+  "Hanzis": "苦",
+  "Significados": "Amargo, Sofrimento",
+  "Piyins": "Gǔ"
+},
+{
+  "Hanzis": "善",
+  "Significados": "Bom, Positivo, Benevolente",
+  "Piyins": "Shàn"
+},
+{
+  "Hanzis": "我",
+  "Significados": "Atman, Eu",
+  "Piyins": "Wǒ"
+},
+{
+  "Hanzis": "非",
+  "Significados": "Não, Negativo, Incorreto",
+  "Piyins": "Fēi"
+},
+{
+  "Hanzis": "智",
+  "Significados": "Discernimento, Sabedoria",
+  "Piyins": "Zhì"
+},
+{
+  "Hanzis": "經",
+  "Significados": "Sutras, Escrituras",
+  "Piyins": "Jīng"
+},
+{
+  "Hanzis": "身",
+  "Significados": "Corpo, Vida, Kāya",
+  "Piyins": "Shēn"
+},
+{
+  "Hanzis": "樂",
+  "Significados": "Música, Deleite",
+  "Piyins": "Lè"
+},
+{
+  "Hanzis": "於",
+  "Significados": "Em, Para, Por",
+  "Piyins": "Yú"
+},
+{
+  "Hanzis": "佛",
+  "Significados": "Buddha, Budismo",
+  "Piyins": "Fó"
+},
+{
+  "Hanzis": "定",
+  "Significados": "Concentrar, Samadhi, Concertar",
+  "Piyins": "Dìng"
+},
+{
+  "Hanzis": "欲",
+  "Significados": "Paixão, Desejo, Aspiração",
+  "Piyins": "Yù"
+},
+{
+  "Hanzis": "識",
+  "Significados": "Vijñāna, Consciência, Cognição",
+  "Piyins": "Shí"
+},
+{
+  "Hanzis": "三",
+  "Significados": "3",
+  "Piyins": "Sān"
+},
+{
+  "Hanzis": "皆",
+  "Significados": "Todos, Em Todos Casos",
+  "Piyins": "Jiē"
+},
+{
+  "Hanzis": "念",
+  "Significados": "Pensar sobre, Lembrar",
+  "Piyins": "Niàn"
+},
+{
+  "Hanzis": "事",
+  "Significados": "Evento, Acontecimento, Assunto",
+  "Piyins": "Shì"
+},
+{
+  "Hanzis": "斷",
+  "Significados": "Cortar, Interromper, Descontínuo",
+  "Piyins": "Duàn"
+},
+{
+  "Hanzis": "惱",
+  "Significados": "Raiva, Ódio",
+  "Piyins": "Nǎo"
+},
+{
+  "Hanzis": "種",
+  "Significados": "Semente, Espécies, Tipos",
+  "Piyins": "Zhǒng"
+},
+{
+  "Hanzis": "道",
+  "Significados": "Caminho, Rota, Razão",
+  "Piyins": "Dào"
+},
+{
+  "Hanzis": "而",
+  "Significados": "Tanto quanto, e, e assim",
+  "Piyins": "Ér"
+},
+{
+  "Hanzis": "二",
+  "Significados": "Dois, 2",
+  "Piyins": "Èr"
+},
+{
+  "Hanzis": "四",
+  "Significados": "4, Quatro",
+  "Piyins": "Sì"
+},
+{
+  "Hanzis": "眾",
+  "Significados": "Muitos, Vários, Multitude",
+  "Piyins": "Zhòng"
+},
+{
+  "Hanzis": "第",
+  "Significados": "No entanto, Mas, Apenas",
+  "Piyins": "Dì"
+},
+{
+  "Hanzis": "貪",
+  "Significados": "Desejo, Ganancia, Ansia",
+  "Piyins": "Tān"
+},
+{
+  "Hanzis": "世",
+  "Significados": "Geração, mundo, era",
+  "Piyins": "Shì"
+},
+{
+  "Hanzis": "切",
+  "Significados": "Cortar, Fatiar",
+  "Piyins": "Qiē"
+},
+{
+  "Hanzis": "時",
+  "Significados": "Tempo, Período, Quando",
+  "Piyins": "Shí"
+},
+{
+  "Hanzis": "但",
+  "Significados": "No entanto, Mas",
+  "Piyins": "Dàn"
+},
+{
+  "Hanzis": "常",
+  "Significados": "Sempre, Constante, Frequente",
+  "Piyins": "Cháng"
+},
+{
+  "Hanzis": "五",
+  "Significados": "5, Cinco",
+  "Piyins": "Wǔ"
+},
+{
+  "Hanzis": "可",
+  "Significados": "Poder, Habilidade",
+  "Piyins": "Kè"
+},
+{
+  "Hanzis": "謂",
+  "Significados": "Dizer, Falar, Nome",
+  "Piyins": "Wèi"
+},
+{
+  "Hanzis": "實",
+  "Significados": "Real, Sólido, Substancial",
+  "Piyins": "Shí"
+},
+{
+  "Hanzis": "想",
+  "Significados": "Pensar, Conceito, Saṃjñā, sañña",
+  "Piyins": "Xiang"
+},
+{
+  "Hanzis": "根",
+  "Significados": "Raíz, Base",
+  "Piyins": "Gēn"
+},
+{
+  "Hanzis": "從",
+  "Significados": "A partir de, por, daí, de",
+  "Piyins": "Cóng"
+},
+{
+  "Hanzis": "汝",
+  "Significados": "tu, você",
+  "Piyins": "Rǔ"
+},
+{
+  "Hanzis": "離",
+  "Significados": "deixar / separar-se de / estar longe de",
+  "Piyins": "Lí"
+},
+{
+  "Hanzis": "處",
+  "Significados": "residir / viver / estar em",
+  "Piyins": "Chǔ"
+},
+{
+  "Hanzis": "自",
+  "Significados": "próprio, privado, pessoal; desde",
+  "Piyins": "Zì"
+},
+{
+  "Hanzis": "別",
+  "Significados": "ir embora; separar-se (de) / diferenciar",
+  "Piyins": "Bié"
+},
+{
+  "Hanzis": "淨",
+  "Significados": "puro, limpo, imaculado",
+  "Piyins": "jìng"
+},
+{
+  "Hanzis": "分",
+  "Significados": "dividir; pequena unidade de tempo etc.",
+  "Piyins": "fēn"
+},
+{
+  "Hanzis": "在",
+  "Significados": "estar em, em, sobre; consistir em",
+  "Piyins": "zài"
+},
+{
+  "Hanzis": "品",
+  "Significados": "artigo, produto, mercadoria",
+  "Piyins": "pǐn"
+},
+{
+  "Hanzis": "隨",
+  "Significados": "seguir / cumprir com / variar de acordo com...",
+  "Piyins": "Suí"
+},
+{
+  "Hanzis": "然",
+  "Significados": "sim, certamente; promessa, penhor",
+  "Piyins": "rán"
+},
+{
+  "Hanzis": "煩",
+  "Significados": "incomodar, aborrecer, incomodar; problemático",
+  "Piyins": "Fán"
+},
+{
+  "Hanzis": "作",
+  "Significados": "fazer; trabalhar; compor",
+  "Piyins": "zuò"
+},
+{
+  "Hanzis": "大",
+  "Significados": "grande; vasto",
+  "Piyins": "dài"
+},
+{
+  "Hanzis": "異",
+  "Significados": "diferente, incomum, estranho",
+  "Piyins": "Yì"
+},
+{
+  "Hanzis": "眼",
+  "Significados": "um relance, buraco, abertura",
+  "Piyins": "yǎn"
+},
+{
+  "Hanzis": "修",
+  "Significados": "estudar; reparar; cultivar",
+  "Piyins": "xiū"
+},
+{
+  "Hanzis": "陰",
+  "Significados": "princípio; segredo; implícito",
+  "Piyins": "yīn"
+},
+{
+  "Hanzis": "盡",
+  "Significados": "extinguir, esgotar",
+  "Piyins": "jǐn"
+},
+{
+  "Hanzis": "報",
+  "Significados": "fruto [kármico], retribuição",
+  "Piyins": "bào"
+},
+{
+  "Hanzis": "明",
+  "Significados": "discernimento, brilhante",
+  "Piyins": "míng"
+},
+{
+  "Hanzis": "即",
+  "Significados": "ou seja, a saber, desse modo",
+  "Piyins": "jí"
+},
+{
+  "Hanzis": "入",
+  "Significados": "adentrar, entradas (sensoriais)",
+  "Piyins": "rù"
+},
+{
+  "Hanzis": "慧",
+  "Significados": "discernimento (prajna)",
+  "Piyins": "huì"
+},
+{
+  "Hanzis": "地",
+  "Significados": "terra (quatro elementos, etc)",
+  "Piyins": "dì"
+},
+{
+  "Hanzis": "空",
+  "Significados": "vazio (do atman, etc)",
+  "Piyins": "kōng"
+},
+{
+  "Hanzis": "惡",
+  "Significados": "algo negativo, não saudável",
+  "Piyins": "è"
+},
+{
+  "Hanzis": "過",
+  "Significados": "passado, equívoco",
+  "Piyins": "guo"
+},
+{
+  "Hanzis": "解",
+  "Significados": "compreensão (analítica)",
+  "Piyins": "jiě"
+},
+{
+  "Hanzis": "當",
+  "Significados": "deve-ser, adequar, próprio",
+  "Piyins": "dāng"
+},
+{
+  "Hanzis": "十",
+  "Significados": 10,
+  "Piyins": "shí"
+},
+{
+  "Hanzis": "罪",
+  "Significados": "erro, engano, falta",
+  "Piyins": "zuì"
+},
+{
+  "Hanzis": "或",
+  "Significados": "ou isto… ou aquilo, talvez",
+  "Piyins": "huò"
+},
+{
+  "Hanzis": "禪",
+  "Significados": "dhyana, absorção",
+  "Piyins": "chán"
+},
+{
+  "Hanzis": "成",
+  "Significados": "realização, tornar-se",
+  "Piyins": "chéng"
+},
+{
+  "Hanzis": "多",
+  "Significados": "muitos",
+  "Piyins": "duō"
+},
+{
+  "Hanzis": "利",
+  "Significados": "benefício, proveito",
+  "Piyins": "lì"
+},
+{
+  "Hanzis": "喜",
+  "Significados": "alegria, prazer, bem estar",
+  "Piyins": "xǐ"
+},
+{
+  "Hanzis": "意",
+  "Significados": "atitude mental, intenção",
+  "Piyins": "yì"
+},
+{
+  "Hanzis": "後",
+  "Significados": "depois, mais tarde, atrás",
+  "Piyins": "hòu"
+},
+{
+  "Hanzis": "餘",
+  "Significados": "os demais, os restantes",
+  "Piyins": "yú"
+},
+{
+  "Hanzis": "云",
+  "Significados": "dizer, falar",
+  "Piyins": "yún"
+},
+{
+  "Hanzis": "觀",
+  "Significados": "vipashyana, observar, olhar",
+  "Piyins": "guān"
+},
+{
+  "Hanzis": "爾",
+  "Significados": "assim, então, aqueles",
+  "Piyins": "ěr"
+},
+{
+  "Hanzis": "耶",
+  "Significados": "finalização de frase, ou interrogação, ou transliteração",
+  "Piyins": "yē"
+},
+{
+  "Hanzis": "正",
+  "Significados": "correto, corrigir",
+  "Piyins": "zhèng"
+},
+{
+  "Hanzis": "也",
+  "Significados": "partícula de conclusão da frase",
+  "Piyins": "yě"
+},
+{
+  "Hanzis": "漏",
+  "Significados": "contaminado, āsrava",
+  "Piyins": "lòu"
+},
+{
+  "Hanzis": "死",
+  "Significados": "morte, morrer",
+  "Piyins": "sǐ"
+},
+{
+  "Hanzis": "脫",
+  "Significados": "soltar, libertação através da compreensão",
+  "Piyins": "tuō"
+},
+{
+  "Hanzis": "羅",
+  "Significados": "fonético, por ex, arahat",
+  "Piyins": "luó"
+},
+{
+  "Hanzis": "取",
+  "Significados": "apego, apegar-se, captar",
+  "Piyins": "qǔ"
+},
+{
+  "Hanzis": "現",
+  "Significados": "presente, agora, aparecer",
+  "Piyins": "xiàn"
+},
+{
+  "Hanzis": "起",
+  "Significados": "surgir, suscitar, causar",
+  "Piyins": "qǐ"
+},
+{
+  "Hanzis": "依",
+  "Significados": "apoiar-se em…, fundamento",
+  "Piyins": "yī"
+},
+{
+  "Hanzis": "諦",
+  "Significados": "verdade (duas verdades)",
+  "Piyins": "dì"
+},
+{
+  "Hanzis": "雖",
+  "Significados": "mesmo que, embora",
+  "Piyins": "suī"
+},
+{
+  "Hanzis": "界",
+  "Significados": "mundo, loka, esferas (dhatu)",
+  "Piyins": "jiè"
+},
+{
+  "Hanzis": "覺",
+  "Significados": "despertar, acordar",
+  "Piyins": "jué"
+},
+{
+  "Hanzis": "觸",
+  "Significados": "contato, sparśa, phassa",
+  "Piyins": "chù"
+},
+{
+  "Hanzis": "戒",
+  "Significados": "vinaya, disciplina monástica",
+  "Piyins": "jiè"
+},
+{
+  "Hanzis": "福",
+  "Significados": "felicidade, benefício (mundano)",
+  "Piyins": "fú"
+},
+{
+  "Hanzis": "來",
+  "Significados": "vir, veio",
+  "Piyins": "lái"
+},
+{
+  "Hanzis": "語",
+  "Significados": "linguagem, discurso do Buda",
+  "Piyins": "yǔ"
+},
+{
+  "Hanzis": "果",
+  "Significados": "fruto (tanto mundano, quanto não mundano), resultado",
+  "Piyins": "guǒ"
+},
+{
+  "Hanzis": "先",
+  "Significados": "primeiro, antigo, anterior",
+  "Piyins": "xiān"
+},
+{
+  "Hanzis": "聞",
+  "Significados": "ouvir / bem conhecido / cheirar",
+  "Piyins": "wén"
+},
+{
+  "Hanzis": "義",
+  "Significados": "conduta correta, justiça",
+  "Piyins": "yì"
+},
+{
+  "Hanzis": "論",
+  "Significados": "debater, tratado, opinião, teoria",
+  "Piyins": "lùn"
+},
+{
+  "Hanzis": "聲",
+  "Significados": "som, voz, ouvir",
+  "Piyins": "shēng"
+},
+{
+  "Hanzis": "與",
+  "Significados": "e, com",
+  "Piyins": "yǔ"
+},
+{
+  "Hanzis": "未",
+  "Significados": "ainda não, futuro",
+  "Piyins": "wèi"
+},
+{
+  "Hanzis": "及",
+  "Significados": "e isso, e aquilo",
+  "Piyins": "jí"
+},
+{
+  "Hanzis": "邪",
+  "Significados": "falso, heterodoxo, perverso",
+  "Piyins": "xié"
+},
+{
+  "Hanzis": "他",
+  "Significados": "ele, outro coisa, outra pessoa",
+  "Piyins": "tā"
+},
+{
+  "Hanzis": "已",
+  "Significados": "já ocorreu, já",
+  "Piyins": "yǐ"
+},
+{
+  "Hanzis": "間",
+  "Significados": "intervalo temporal, intervalo espacial",
+  "Piyins": "jiān"
+},
+{
+  "Hanzis": "力",
+  "Significados": "força, poder",
+  "Piyins": "lì"
+},
+{
+  "Hanzis": "次",
+  "Significados": "sequencia, próximo",
+  "Piyins": "cì"
+},
+{
+  "Hanzis": "阿",
+  "Significados": " 'a' fonético",
+  "Piyins": "ā"
+},
+{
+  "Hanzis": "思",
+  "Significados": "pensar, considerar, pensamento",
+  "Piyins": "sī"
+},
+{
+  "Hanzis": "愛",
+  "Significados": "desejo com apego, desejo, amor",
+  "Piyins": "ài"
+},
+{
+  "Hanzis": "捨",
+  "Significados": "abandonar, desapego",
+  "Piyins": "shě"
+},
+{
+  "Hanzis": "去",
+  "Significados": "já passou, passado",
+  "Piyins": "qù"
+},
+{
+  "Hanzis": "壞",
+  "Significados": "desfazer, quebrar",
+  "Piyins": "huài"
+},
+{
+  "Hanzis": "假",
+  "Significados": "nominal, fictício",
+  "Piyins": "jiǎ"
+},
+{
+  "Hanzis": "殺",
+  "Significados": "matar",
+  "Piyins": "shā"
+},
+{
+  "Hanzis": "物",
+  "Significados": "coisas em geral",
+  "Piyins": "wù"
+},
+{
+  "Hanzis": "性",
+  "Significados": "svabhava, natureza própria",
+  "Piyins": "xìng"
+},
+{
+  "Hanzis": "至",
+  "Significados": "alcançar, chegar",
+  "Piyins": "zhì"
+},
+{
+  "Hanzis": "住",
+  "Significados": "habitar, estabilidade",
+  "Piyins": "zhù"
+},
+{
+  "Hanzis": "初",
+  "Significados": "primeiro, início",
+  "Piyins": "chū"
+},
+{
+  "Hanzis": "上",
+  "Significados": "acima de, acima",
+  "Piyins": "shàng"
+},
+{
+  "Hanzis": "食",
+  "Significados": "comer, alimento, alimentar",
+  "Piyins": "shí"
+},
+{
+  "Hanzis": "天",
+  "Significados": "mundo dos devas, céu",
+  "Piyins": "tiān"
+},
+{
+  "Hanzis": "復",
+  "Significados": "repetir, ou ainda, retornar",
+  "Piyins": "fù"
+},
+{
+  "Hanzis": "六",
+  "Significados": "6, seis",
+  "Piyins": "liù"
+},
+{
+  "Hanzis": "信",
+  "Significados": "confiança, śraddhā",
+  "Piyins": "xìn"
+},
+{
+  "Hanzis": "數",
+  "Significados": "número, vários, frequentemente",
+  "Piyins": "shǔ"
+},
+{
+  "Hanzis": "聖",
+  "Significados": "sábio, arya pudgala, 4 nobres verdades",
+  "Piyins": "shèng"
+},
+{
+  "Hanzis": "施",
+  "Significados": "oferecimento, oferta",
+  "Piyins": "shī"
+},
+{
+  "Hanzis": "出",
+  "Significados": "sair, recluso, ruptura",
+  "Piyins": "chū"
+},
+{
+  "Hanzis": "洹",
+  "Significados": "outra forma fonética de compor a palavra nirvana",
+  "Piyins": "huán"
+},
+{
+  "Hanzis": "堅",
+  "Significados": "solidez",
+  "Piyins": "jiān"
+},
+{
+  "Hanzis": "使",
+  "Significados": "klesha, causar, fazer",
+  "Piyins": "shǐ"
+},
+{
+  "Hanzis": "火",
+  "Significados": "calor, fogo",
+  "Piyins": "huǒ"
+},
+{
+  "Hanzis": "集",
+  "Significados": "verdade da origem, coletânea",
+  "Piyins": "jí"
+},
+{
+  "Hanzis": "求",
+  "Significados": "buscar, procurar",
+  "Piyins": "qiú"
+},
+{
+  "Hanzis": "具",
+  "Significados": "instrumento, ferramenta",
+  "Piyins": "jù"
+},
+{
+  "Hanzis": "令",
+  "Significados": "comandar, dirigir",
+  "Piyins": "lìng"
+},
+{
+  "Hanzis": "比",
+  "Significados": "comparar, mas também pode ter uso fonético.",
+  "Piyins": "bǐ"
+},
+{
+  "Hanzis": "之",
+  "Significados": "a característica de alguma coisa",
+  "Piyins": "zhī"
+},
+{
+  "Hanzis": "少",
+  "Significados": "pouco",
+  "Piyins": "shǎo"
+},
+{
+  "Hanzis": "合",
+  "Significados": "junto",
+  "Piyins": "gě"
+},
+{
+  "Hanzis": "難",
+  "Significados": "difícil, penoso",
+  "Piyins": "nán"
+},
+{
+  "Hanzis": "更",
+  "Significados": "ainda mais, ainda",
+  "Piyins": "gèng"
+},
+{
+  "Hanzis": "破",
+  "Significados": "refutar, desfazer",
+  "Piyins": "pò"
+},
+{
+  "Hanzis": "勝",
+  "Significados": "superior, excelente",
+  "Piyins": "shèng"
+},
+{
+  "Hanzis": "乃",
+  "Significados": "entao, até, assim",
+  "Piyins": "nǎi"
+},
+{
+  "Hanzis": "香",
+  "Significados": "incenso, fragrancia, cheiro",
+  "Piyins": "xiāng"
+},
+{
+  "Hanzis": "憶",
+  "Significados": "memória, lembrança",
+  "Piyins": "yì"
+},
+{
+  "Hanzis": "泥",
+  "Significados": "lama, argila",
+  "Piyins": "ní"
+},
+{
+  "Hanzis": "瞋",
+  "Significados": "ódio, raiva",
+  "Piyins": "chēn"
+},
+{
+  "Hanzis": "差",
+  "Significados": "distinçao, diferença",
+  "Piyins": "chā"
+},
+{
+  "Hanzis": "七",
+  "Significados": 7,
+  "Piyins": "qī"
+},
+{
+  "Hanzis": "八",
+  "Significados": 8,
+  "Piyins": "bā"
+},
+{
+  "Hanzis": "疑",
+  "Significados": "duvidar, suspeitar, indecisao",
+  "Piyins": "yí"
+},
+{
+  "Hanzis": "水",
+  "Significados": "água, liquidez, fluidez ",
+  "Piyins": "shuǐ"
+},
+{
+  "Hanzis": "足",
+  "Significados": "pé, excessivo, suficiente",
+  "Piyins": "jù"
+},
+{
+  "Hanzis": "今",
+  "Significados": "presente, agora, hoje",
+  "Piyins": "jīn"
+},
+{
+  "Hanzis": "習",
+  "Significados": "praticar, estudar",
+  "Piyins": "xí"
+},
+{
+  "Hanzis": "其",
+  "Significados": "este, tal que",
+  "Piyins": "qí"
+},
+{
+  "Hanzis": "深",
+  "Significados": "profundo",
+  "Piyins": "shēn"
+},
+{
+  "Hanzis": "外",
+  "Significados": "fora, tirthika",
+  "Piyins": "wài"
+},
+{
+  "Hanzis": "口",
+  "Significados": "boca",
+  "Piyins": "kǒu"
+},
+{
+  "Hanzis": "著",
+  "Significados": "apego",
+  "Piyins": "zhāo"
+},
+{
+  "Hanzis": "漢",
+  "Significados": "Etnia Han,usado para transliteracao ",
+  "Piyins": "hàn"
+},
+{
+  "Hanzis": "味",
+  "Significados": "Gosto, transliteracao tambem",
+  "Piyins": "wèi"
+},
+{
+  "Hanzis": "陀",
+  "Significados": "Declínio, Amituo",
+  "Piyins": "tuó"
+},
+{
+  "Hanzis": "夫",
+  "Significados": "homem, marido",
+  "Piyins": "fū"
+},
+{
+  "Hanzis": "結",
+  "Significados": "produzir, fruto",
+  "Piyins": "jiē"
+},
+{
+  "Hanzis": "德",
+  "Significados": "virtude, moralidade",
+  "Piyins": "dé"
+},
+{
+  "Hanzis": "到",
+  "Significados": "para, alcançar, realizar",
+  "Piyins": "dào"
+},
+{
+  "Hanzis": "風",
+  "Significados": "vento, mobilidade",
+  "Piyins": "fēng"
+},
+{
+  "Hanzis": "凡",
+  "Significados": "ordinário, ignorante",
+  "Piyins": "fán"
+},
+{
+  "Hanzis": "命",
+  "Significados": "compaixao, vida",
+  "Piyins": "mìng"
+},
+{
+  "Hanzis": "重",
+  "Significados": "camada, pesado, repetido",
+  "Piyins": "chóng"
+},
+{
+  "Hanzis": "獄",
+  "Significados": "prisao, preso",
+  "Piyins": "yù"
+},
+{
+  "Hanzis": "癡",
+  "Significados": "tolo, avidya, ignorancia",
+  "Piyins": "chī"
+}
+];
 
-        // Variáveis para armazenar pontuação
-        let score = 0;
-        let mistakes = 0;
-        let currentGoal = 63;
-        let currentQuestion = {};
-        let allMeanings = [];
+let score = 0;
+let mistakes = 0;
+let currentGoal = 63;
+let currentQuestion = {};
+let allMeanings = [];
+let dataSubset = data.slice(0, currentGoal); // Start with the first 63
 
-        // Inicializa o jogo
-        function init() {
-            console.log("Iniciando o jogo...");
-            allMeanings = [...new Set(data.flatMap(item => item.Significados.toString().split(', ')))];
-            console.log("Todos os significados únicos carregados:", allMeanings);
-            nextQuestion();
-        }
+function init() {
+allMeanings = [...new Set(data.flatMap(item => item.Significados.toString().split(', ')))];
+nextQuestion();
+}
 
-        // Carrega a próxima pergunta
-        function nextQuestion() {
-            if (data.length === 0 || score >= currentGoal) {
-                console.log("Fim do jogo ou meta atingida. Chamando handleNextGoal...");
-                handleNextGoal();
-                return;
-            }
+function nextQuestion() {
+if (score >= currentGoal) {
+    if (dataSubset.length < data.length){
+        currentGoal++;
+        dataSubset = data.slice(0, currentGoal);
+        document.getElementById('goal').innerText = currentGoal;
+    } else {
+        alert(`Parabéns! Você atingiu a meta de ${currentGoal} acertos!`);
+        return;
+    }
+}
 
-            // Seleciona uma pergunta aleatória
-            currentQuestion = data[Math.floor(Math.random() * data.length)];
-            console.log("Nova pergunta selecionada:", currentQuestion);
-            const correctAnswer = currentQuestion.Significados.split(', ')[0];
-            const options = shuffle([correctAnswer, ...shuffle(allMeanings.filter(m => m !== correctAnswer)).slice(0, 3)]);
 
-            console.log("Opções de resposta geradas:", options);
+currentQuestion = dataSubset[Math.floor(Math.random() * dataSubset.length)];
+const correctAnswer = currentQuestion.Significados.split(', ')[0];
+const options = shuffle([correctAnswer, ...shuffle(allMeanings.filter(m => m !== correctAnswer)).slice(0, 3)]);
 
-            // Atualiza o DOM com o Hanzi, Pinyin e opções
-            document.getElementById('hanzi').innerText = currentQuestion.Hanzis;
-            document.getElementById('pinyin').innerText = currentQuestion.Piyins;
-            document.getElementById('answers').innerHTML = options.map(option => `
-                <button onclick="checkAnswer('${option}')">${option}</button>
-            `).join('');
-        }
 
-        // Verifica a resposta do jogador
-        function checkAnswer(selectedAnswer) {
-            console.log("Resposta selecionada pelo jogador:", selectedAnswer);
-            const correctAnswer = currentQuestion.Significados.split(', ')[0];
-            console.log("Resposta correta:", correctAnswer);
+document.getElementById('hanzi').innerText = currentQuestion.Hanzis;
+document.getElementById('pinyin').innerText = currentQuestion.Piyins;
+document.getElementById('answers').innerHTML = options.map(option => `
+<button onclick="checkAnswer('${option}')">${option}</button>
+`).join('');
+}
 
-            if (selectedAnswer === correctAnswer) {
-                console.log("Resposta correta!");
-                score++;
-                data.splice(data.indexOf(currentQuestion), 1); // Remove a pergunta respondida
-            } else {
-                console.log("Resposta incorreta.");
-                mistakes++;
-            }
+function checkAnswer(selectedAnswer) {
+const correctAnswer = currentQuestion.Significados.split(', ')[0];
 
-            updateScore();
-            nextQuestion();
-        }
+if (selectedAnswer === correctAnswer) {
+score++;
+} else {
+mistakes++;
+}
 
-        // Atualiza os contadores de pontuação
-        function updateScore() {
-            console.log(`Atualizando pontuação. Acertos: ${score}, Erros: ${mistakes}`);
-            document.getElementById('score').innerText = score;
-            document.getElementById('mistakes').innerText = mistakes;
-        }
+updateScore();
+nextQuestion();
+}
 
-        // Manipula a meta do jogador
-        function handleNextGoal() {
-            if (score >= currentGoal) {
-                console.log(`Meta atingida! Nova meta será ${currentGoal + 1}`);
-                alert(`Parabéns! Você atingiu a meta de ${currentGoal} acertos! Nova meta: ${++currentGoal}`);
-                document.getElementById('goal').innerText = currentGoal;
-                nextQuestion();
-            } else {
-                console.log("Fim do jogo.");
-                alert('Fim do jogo!');
-            }
-        }
+function updateScore() {
+document.getElementById('score').innerText = score;
+document.getElementById('mistakes').innerText = mistakes;
+}
 
-        // Função para embaralhar um array
-        function shuffle(array) {
-            console.log("Embaralhando array:", array);
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            console.log("Array embaralhado:", array);
-            return array;
-        }
+function shuffle(array) {
+for (let i = array.length - 1; i > 0; i--) {
+const j = Math.floor(Math.random() * (i + 1));
+[array[i], array[j]] = [array[j], array[i]];
+}
+return array;
+}
 
-        // Inicia o jogo
-        init();
-    </script>
+init();
+</script>
 </body>
-
 </html>
