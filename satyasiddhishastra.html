@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo de Hanzis</title>
+    <style>
+        /* Estilo geral do corpo */
+        body {
+            background-color: #e2be8b;
+            font-family: Arial, sans-serif;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            font-size: 22px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Estilo do contêiner principal */
+        .content {
+            text-align: center;
+            padding: 30px;
+            max-width: 800px;
+            background-color: #f7e4d0;
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+        }
+
+        /* Estilo do título */
+        h1 {
+            color: #4a90e2;
+        }
+
+        /* Destaque para o Hanzi */
+        .hanzi {
+            font-size: 50px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        /* Botões de resposta */
+        .answers {
+            margin-top: 20px;
+        }
+
+        .answers button {
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .answers button:hover {
+            background-color: #45a049;
+        }
+
+        /* Estilo da seção de pontuação */
+        .score {
+            margin-top: 20px;
+            font-size: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .score p {
+            margin: 0;
+            padding: 0 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content">
+        <h1>Estude os Hanzis do Satya Siddhi Shastra</h1>
+        <p class="hanzi" id="hanzi"></p>
+        <p><strong>Pinyin:</strong> <span id="pinyin"></span></p>
+        <div class="answers" id="answers"></div>
+        <div class="score">
+            <p>Erros: <span id="mistakes">0</span></p>
+            <p>Meta Atual: <span id="goal">63</span></p>
+            <p>Acertos: <span id="score">0</span></p>
+        </div>
+    </div>
+
+    <script>
+        // Array de dados com Hanzis, significados e Pinyin
+        const data = [
+            { "Hanzis": "不", "Significados": "Não, Negativo", "Piyins": "Bù" },
+            { "Hanzis": "問", "Significados": "Perguntar, Investigar", "Piyins": "Wèn" },
+            { "Hanzis": "曰", "Significados": "Dizer, Falar", "Piyins": "Yuē" },
+            // Adicione outros Hanzis aqui
+        ];
+
+        // Variáveis para armazenar pontuação
+        let score = 0;
+        let mistakes = 0;
+        let currentGoal = 63;
+        let currentQuestion = {};
+        let allMeanings = [];
+
+        // Inicializa o jogo
+        function init() {
+            console.log("Iniciando o jogo...");
+            allMeanings = [...new Set(data.flatMap(item => item.Significados.toString().split(', ')))];
+            console.log("Todos os significados únicos carregados:", allMeanings);
+            nextQuestion();
+        }
+
+        // Carrega a próxima pergunta
+        function nextQuestion() {
+            if (data.length === 0 || score >= currentGoal) {
+                console.log("Fim do jogo ou meta atingida. Chamando handleNextGoal...");
+                handleNextGoal();
+                return;
+            }
+
+            // Seleciona uma pergunta aleatória
+            currentQuestion = data[Math.floor(Math.random() * data.length)];
+            console.log("Nova pergunta selecionada:", currentQuestion);
+            const correctAnswer = currentQuestion.Significados.split(', ')[0];
+            const options = shuffle([correctAnswer, ...shuffle(allMeanings.filter(m => m !== correctAnswer)).slice(0, 3)]);
+
+            console.log("Opções de resposta geradas:", options);
+
+            // Atualiza o DOM com o Hanzi, Pinyin e opções
+            document.getElementById('hanzi').innerText = currentQuestion.Hanzis;
+            document.getElementById('pinyin').innerText = currentQuestion.Piyins;
+            document.getElementById('answers').innerHTML = options.map(option => `
+                <button onclick="checkAnswer('${option}')">${option}</button>
+            `).join('');
+        }
+
+        // Verifica a resposta do jogador
+        function checkAnswer(selectedAnswer) {
+            console.log("Resposta selecionada pelo jogador:", selectedAnswer);
+            const correctAnswer = currentQuestion.Significados.split(', ')[0];
+            console.log("Resposta correta:", correctAnswer);
+
+            if (selectedAnswer === correctAnswer) {
+                console.log("Resposta correta!");
+                score++;
+                data.splice(data.indexOf(currentQuestion), 1); // Remove a pergunta respondida
+            } else {
+                console.log("Resposta incorreta.");
+                mistakes++;
+            }
+
+            updateScore();
+            nextQuestion();
+        }
+
+        // Atualiza os contadores de pontuação
+        function updateScore() {
+            console.log(`Atualizando pontuação. Acertos: ${score}, Erros: ${mistakes}`);
+            document.getElementById('score').innerText = score;
+            document.getElementById('mistakes').innerText = mistakes;
+        }
+
+        // Manipula a meta do jogador
+        function handleNextGoal() {
+            if (score >= currentGoal) {
+                console.log(`Meta atingida! Nova meta será ${currentGoal + 1}`);
+                alert(`Parabéns! Você atingiu a meta de ${currentGoal} acertos! Nova meta: ${++currentGoal}`);
+                document.getElementById('goal').innerText = currentGoal;
+                nextQuestion();
+            } else {
+                console.log("Fim do jogo.");
+                alert('Fim do jogo!');
+            }
+        }
+
+        // Função para embaralhar um array
+        function shuffle(array) {
+            console.log("Embaralhando array:", array);
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            console.log("Array embaralhado:", array);
+            return array;
+        }
+
+        // Inicia o jogo
+        init();
+    </script>
+</body>
+
+</html>
