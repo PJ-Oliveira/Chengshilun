@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>成實論 - Chengshilun Hanzi</title>  
+<title>成實論 - Chengshilun Hanzi</title>
 <style>
 body {
 background-color: #e2be8b;
@@ -68,19 +68,27 @@ justify-content: space-between;
 margin: 0;
 padding: 0 10px;
 }
+/* Style for completed message */
+#completion-message {
+    margin-top: 30px;
+    font-size: 24px;
+    color: green;
+    font-weight: bold;
+}
 </style>
 </head>
 <body>
 <div class="content">
-<h1>成實論 - Chengshilun Hanzi</h1>  
+<h1>成實論 - Chengshilun Hanzi</h1>
 <p class="hanzi" id="hanzi"></p>
 <p><strong>Pinyin:</strong> <span id="pinyin"></span></p>
 <div class="answers" id="answers"></div>
 <div class="score">
-<p>Mistakes: <span id="mistakes">0</span></p>  
-<p>Current Goal: <span id="goal">100</span></p>  
-<p>Correct: <span id="score">0</span></p>  
+<p>Mistakes: <span id="mistakes">0</span></p>
+<p>Total Hanzi: <span id="goal">0</span></p>
+<p>Correct: <span id="score">0</span></p>
 </div>
+<div id="completion-message" style="display: none;">Congratulations! You have completed all Hanzi!</div> 
 </div>
 
 <script>
@@ -267,102 +275,102 @@ const data = [
   },
   {
     "Hanzis": "應",
-    "Significados": "respond, deal with, should", // Translated
+    "Significados": "respond, deal with, should",
     "Piyins": "Yìng"
   },
   {
     "Hanzis": "緣",
-    "Significados": "Cause, Reason, Dependence", // Translated
+    "Significados": "Cause, Reason, Dependence",
     "Piyins": "Yuán"
   },
   {
     "Hanzis": "答",
-    "Significados": "Reply, Agree", // Translated
+    "Significados": "Reply, Agree",
     "Piyins": "Dá"
   },
   {
     "Hanzis": "言",
-    "Significados": "Words, Say, Speak", // Translated
+    "Significados": "Words, Say, Speak",
     "Piyins": "Yán"
   },
   {
     "Hanzis": "問",
-    "Significados": "Ask, Investigate", // Translated
+    "Significados": "Ask, Investigate",
     "Piyins": "Wèn"
   },
   {
     "Hanzis": "滅",
-    "Significados": "Extinguish, Cease", // Translated
+    "Significados": "Extinguish, Cease",
     "Piyins": "Miè"
   },
   {
     "Hanzis": "受",
-    "Significados": "Bear, Receive, Take", // Translated
+    "Significados": "Bear, Receive, Take",
     "Piyins": "Shòu"
   },
   {
     "Hanzis": "苦",
-    "Significados": "Bitter, Suffering", // Translated
+    "Significados": "Bitter, Suffering",
     "Piyins": "Gǔ"
   },
   {
     "Hanzis": "善",
-    "Significados": "Good, Positive, Benevolent", // Translated
+    "Significados": "Good, Positive, Benevolent",
     "Piyins": "Shàn"
   },
   {
     "Hanzis": "我",
-    "Significados": "Atman, Self", // Translated
+    "Significados": "Atman, Self",
     "Piyins": "Wǒ"
   },
   {
     "Hanzis": "非",
-    "Significados": "Not, Negative, Incorrect", // Translated
+    "Significados": "Not, Negative, Incorrect",
     "Piyins": "Fēi"
   },
   {
     "Hanzis": "智",
-    "Significados": "Discernment, Wisdom", // Translated
+    "Significados": "Discernment, Wisdom",
     "Piyins": "Zhì"
   },
   {
     "Hanzis": "經",
-    "Significados": "Sutras, Scriptures", // Translated
+    "Significados": "Sutras, Scriptures",
     "Piyins": "Jīng"
   },
   {
     "Hanzis": "身",
-    "Significados": "Body, Life, Kāya", // Translated
+    "Significados": "Body, Life, Kāya",
     "Piyins": "Shēn"
   },
   {
     "Hanzis": "樂",
-    "Significados": "Music, Delight", // Translated
+    "Significados": "Music, Delight",
     "Piyins": "Lè"
   },
   {
     "Hanzis": "於",
-    "Significados": "In, To, By", // Translated
+    "Significados": "In, To, By",
     "Piyins": "Yú"
   },
   {
     "Hanzis": "佛",
-    "Significados": "Buddha, Buddhism", // Translated
+    "Significados": "Buddha, Buddhism",
     "Piyins": "Fó"
   },
   {
     "Hanzis": "定",
-    "Significados": "Concentrate, Samadhi, Establish", // Translated
+    "Significados": "Concentrate, Samadhi, Establish",
     "Piyins": "Dìng"
   },
   {
     "Hanzis": "欲",
-    "Significados": "Passion, Desire, Aspiration", // Translated
+    "Significados": "Passion, Desire, Aspiration",
     "Piyins": "Yù"
   },
   {
     "Hanzis": "識",
-    "Significados": "Vijñāna, Consciousness, Cognition", // Translated
+    "Significados": "Vijñāna, Consciousness, Cognition",
     "Piyins": "Shí"
   },
   {
@@ -372,277 +380,277 @@ const data = [
   },
   {
     "Hanzis": "皆",
-    "Significados": "All, In All Cases", // Translated
+    "Significados": "All, In All Cases",
     "Piyins": "Jiē"
   },
   {
     "Hanzis": "念",
-    "Significados": "Think about, Remember", // Translated
+    "Significados": "Think about, Remember",
     "Piyins": "Niàn"
   },
   {
     "Hanzis": "事",
-    "Significados": "Event, Happening, Matter", // Translated
+    "Significados": "Event, Happening, Matter",
     "Piyins": "Shì"
   },
   {
     "Hanzis": "斷",
-    "Significados": "Cut, Interrupt, Discontinuous", // Translated
+    "Significados": "Cut, Interrupt, Discontinuous",
     "Piyins": "Duàn"
   },
   {
     "Hanzis": "惱",
-    "Significados": "Anger, Hatred", // Translated
+    "Significados": "Anger, Hatred",
     "Piyins": "Nǎo"
   },
   {
     "Hanzis": "種",
-    "Significados": "Seed, Species, Types", // Translated
+    "Significados": "Seed, Species, Types",
     "Piyins": "Zhǒng"
   },
   {
     "Hanzis": "道",
-    "Significados": "Path, Route, Reason", // Translated
+    "Significados": "Path, Route, Reason",
     "Piyins": "Dào"
   },
   {
     "Hanzis": "而",
-    "Significados": "As much as, and, and so", // Translated
+    "Significados": "As much as, and, and so",
     "Piyins": "Ér"
   },
   {
     "Hanzis": "二",
-    "Significados": "Two, 2", // Translated
+    "Significados": "Two, 2",
     "Piyins": "Èr"
   },
   {
     "Hanzis": "四",
-    "Significados": "4, Four", // Translated
+    "Significados": "4, Four",
     "Piyins": "Sì"
   },
   {
     "Hanzis": "眾",
-    "Significados": "Many, Various, Multitude", // Translated
+    "Significados": "Many, Various, Multitude",
     "Piyins": "Zhòng"
   },
   {
     "Hanzis": "第",
-    "Significados": "However, But, Only", // Translated
+    "Significados": "However, But, Only",
     "Piyins": "Dì"
   },
   {
     "Hanzis": "貪",
-    "Significados": "Desire, Greed, Craving", // Translated
+    "Significados": "Desire, Greed, Craving",
     "Piyins": "Tān"
   },
   {
     "Hanzis": "世",
-    "Significados": "Generation, world, era", // Translated
+    "Significados": "Generation, world, era",
     "Piyins": "Shì"
   },
   {
     "Hanzis": "切",
-    "Significados": "Cut, Slice", // Translated
+    "Significados": "Cut, Slice",
     "Piyins": "Qiē"
   },
   {
     "Hanzis": "時",
-    "Significados": "Time, Period, When", // Translated
+    "Significados": "Time, Period, When",
     "Piyins": "Shí"
   },
   {
     "Hanzis": "但",
-    "Significados": "However, But", // Translated
+    "Significados": "However, But",
     "Piyins": "Dàn"
   },
   {
     "Hanzis": "常",
-    "Significados": "Always, Constant, Frequent", // Translated
+    "Significados": "Always, Constant, Frequent",
     "Piyins": "Cháng"
   },
   {
     "Hanzis": "五",
-    "Significados": "5, Five", // Translated
+    "Significados": "5, Five",
     "Piyins": "Wǔ"
   },
   {
     "Hanzis": "可",
-    "Significados": "Can, Ability", // Translated
+    "Significados": "Can, Ability",
     "Piyins": "Kè"
   },
   {
     "Hanzis": "謂",
-    "Significados": "Say, Speak, Name", // Translated
+    "Significados": "Say, Speak, Name",
     "Piyins": "Wèi"
   },
   {
     "Hanzis": "實",
-    "Significados": "Real, Solid, Substantial", // Translated
+    "Significados": "Real, Solid, Substantial",
     "Piyins": "Shí"
   },
   {
     "Hanzis": "想",
-    "Significados": "Think, Concept, Saṃjñā, sañña", // Translated
+    "Significados": "Think, Concept, Saṃjñā, sañña",
     "Piyins": "Xiang"
   },
   {
     "Hanzis": "根",
-    "Significados": "Root, Base", // Translated
+    "Significados": "Root, Base",
     "Piyins": "Gēn"
   },
   {
     "Hanzis": "從",
-    "Significados": "From, by, hence, of", // Translated
+    "Significados": "From, by, hence, of",
     "Piyins": "Cóng"
   },
   {
     "Hanzis": "汝",
-    "Significados": "you", // Translated
+    "Significados": "you",
     "Piyins": "Rǔ"
   },
   {
     "Hanzis": "離",
-    "Significados": "leave / separate from / be far from", // Translated
+    "Significados": "leave / separate from / be far from",
     "Piyins": "Lí"
   },
   {
     "Hanzis": "處",
-    "Significados": "reside / live / be in", // Translated
+    "Significados": "reside / live / be in",
     "Piyins": "Chǔ"
   },
   {
     "Hanzis": "自",
-    "Significados": "own, private, personal; since", // Translated
+    "Significados": "own, private, personal; since",
     "Piyins": "Zì"
   },
   {
     "Hanzis": "別",
-    "Significados": "go away; separate (from) / differentiate", // Translated
+    "Significados": "go away; separate (from) / differentiate",
     "Piyins": "Bié"
   },
   {
     "Hanzis": "淨",
-    "Significados": "pure, clean, immaculate", // Translated
+    "Significados": "pure, clean, immaculate",
     "Piyins": "jìng"
   },
   {
     "Hanzis": "分",
-    "Significados": "divide; small unit of time etc.", // Translated
+    "Significados": "divide; small unit of time etc.",
     "Piyins": "fēn"
   },
   {
     "Hanzis": "在",
-    "Significados": "be in, on, about; consist of", // Translated
+    "Significados": "be in, on, about; consist of",
     "Piyins": "zài"
   },
   {
     "Hanzis": "品",
-    "Significados": "article, product, commodity", // Translated
+    "Significados": "article, product, commodity",
     "Piyins": "pǐn"
   },
   {
     "Hanzis": "隨",
-    "Significados": "follow / comply with / vary according to...", // Translated
+    "Significados": "follow / comply with / vary according to...",
     "Piyins": "Suí"
   },
   {
     "Hanzis": "然",
-    "Significados": "yes, certainly; promise, pledge", // Translated
+    "Significados": "yes, certainly; promise, pledge",
     "Piyins": "rán"
   },
   {
     "Hanzis": "煩",
-    "Significados": "bother, annoy, trouble; troublesome", // Translated
+    "Significados": "bother, annoy, trouble; troublesome",
     "Piyins": "Fán"
   },
   {
     "Hanzis": "作",
-    "Significados": "make; work; compose", // Translated
+    "Significados": "make; work; compose",
     "Piyins": "zuò"
   },
   {
     "Hanzis": "大",
-    "Significados": "big; vast", // Translated
+    "Significados": "big; vast",
     "Piyins": "dài"
   },
   {
     "Hanzis": "異",
-    "Significados": "different, unusual, strange", // Translated
+    "Significados": "different, unusual, strange",
     "Piyins": "Yì"
   },
   {
     "Hanzis": "眼",
-    "Significados": "a glance, hole, opening", // Translated
+    "Significados": "a glance, hole, opening",
     "Piyins": "yǎn"
   },
   {
     "Hanzis": "修",
-    "Significados": "study; repair; cultivate", // Translated
+    "Significados": "study; repair; cultivate",
     "Piyins": "xiū"
   },
   {
     "Hanzis": "陰",
-    "Significados": "principle; secret; implicit", // Translated
+    "Significados": "principle; secret; implicit",
     "Piyins": "yīn"
   },
   {
     "Hanzis": "盡",
-    "Significados": "extinguish, exhaust", // Translated
+    "Significados": "extinguish, exhaust",
     "Piyins": "jǐn"
   },
   {
     "Hanzis": "報",
-    "Significados": "[karmic] fruit, retribution", // Translated
+    "Significados": "[karmic] fruit, retribution",
     "Piyins": "bào"
   },
   {
     "Hanzis": "明",
-    "Significados": "discernment, bright", // Translated
+    "Significados": "discernment, bright",
     "Piyins": "míng"
   },
   {
     "Hanzis": "即",
-    "Significados": "that is, namely, thus", // Translated
+    "Significados": "that is, namely, thus",
     "Piyins": "jí"
   },
   {
     "Hanzis": "入",
-    "Significados": "enter, (sensory) inputs", // Translated
+    "Significados": "enter, (sensory) inputs",
     "Piyins": "rù"
   },
   {
     "Hanzis": "慧",
-    "Significados": "discernment (prajna)", // Translated
+    "Significados": "discernment (prajna)",
     "Piyins": "huì"
   },
   {
     "Hanzis": "地",
-    "Significados": "earth (four elements, etc)", // Translated
+    "Significados": "earth (four elements, etc)",
     "Piyins": "dì"
   },
   {
     "Hanzis": "空",
-    "Significados": "empty (of atman, etc)", // Translated
+    "Significados": "empty (of atman, etc)",
     "Piyins": "kōng"
   },
   {
     "Hanzis": "惡",
-    "Significados": "something negative, unhealthy", // Translated
+    "Significados": "something negative, unhealthy",
     "Piyins": "è"
   },
   {
     "Hanzis": "過",
-    "Significados": "past, misunderstanding", // Translated
+    "Significados": "past, misunderstanding",
     "Piyins": "guo"
   },
   {
     "Hanzis": "解",
-    "Significados": "(analytical) understanding", // Translated
+    "Significados": "(analytical) understanding",
     "Piyins": "jiě"
   },
   {
     "Hanzis": "當",
-    "Significados": "should be, fit, proper", // Translated
+    "Significados": "should be, fit, proper",
     "Piyins": "dāng"
   },
   {
@@ -652,382 +660,382 @@ const data = [
   },
   {
     "Hanzis": "罪",
-    "Significados": "error, mistake, fault", // Translated
+    "Significados": "error, mistake, fault",
     "Piyins": "zuì"
   },
   {
     "Hanzis": "或",
-    "Significados": "either this... or that, perhaps", // Translated
+    "Significados": "either this... or that, perhaps",
     "Piyins": "huò"
   },
   {
     "Hanzis": "禪",
-    "Significados": "dhyana, absorption", // Translated
+    "Significados": "dhyana, absorption",
     "Piyins": "chán"
   },
   {
     "Hanzis": "成",
-    "Significados": "realization, becoming", // Translated
+    "Significados": "realization, becoming",
     "Piyins": "chéng"
   },
   {
     "Hanzis": "多",
-    "Significados": "many", // Translated
+    "Significados": "many",
     "Piyins": "duō"
   },
   {
     "Hanzis": "利",
-    "Significados": "benefit, advantage", // Translated
+    "Significados": "benefit, advantage",
     "Piyins": "lì"
   },
   {
     "Hanzis": "喜",
-    "Significados": "joy, pleasure, well-being", // Translated
+    "Significados": "joy, pleasure, well-being",
     "Piyins": "xǐ"
   },
   {
     "Hanzis": "意",
-    "Significados": "mental attitude, intention", // Translated
+    "Significados": "mental attitude, intention",
     "Piyins": "yì"
   },
   {
     "Hanzis": "後",
-    "Significados": "after, later, behind", // Translated
+    "Significados": "after, later, behind",
     "Piyins": "hòu"
   },
   {
     "Hanzis": "餘",
-    "Significados": "the others, the remaining", // Translated
+    "Significados": "the others, the remaining",
     "Piyins": "yú"
   },
   {
     "Hanzis": "云",
-    "Significados": "say, speak", // Translated
+    "Significados": "say, speak",
     "Piyins": "yún"
   },
   {
     "Hanzis": "觀",
-    "Significados": "vipashyana, observe, look", // Translated
+    "Significados": "vipashyana, observe, look",
     "Piyins": "guān"
   },
   {
     "Hanzis": "爾",
-    "Significados": "thus, then, those", // Translated
+    "Significados": "thus, then, those",
     "Piyins": "ěr"
   },
   {
     "Hanzis": "耶",
-    "Significados": "sentence ending, or interrogation, or transliteration", // Translated
+    "Significados": "sentence ending, or interrogation, or transliteration",
     "Piyins": "yē"
   },
   {
     "Hanzis": "正",
-    "Significados": "correct, rectify", // Translated
+    "Significados": "correct, rectify",
     "Piyins": "zhèng"
   },
   {
     "Hanzis": "也",
-    "Significados": "sentence completion particle", // Translated
+    "Significados": "sentence completion particle",
     "Piyins": "yě"
   },
   {
     "Hanzis": "漏",
-    "Significados": "contaminated, āsrava", // Translated
+    "Significados": "contaminated, āsrava",
     "Piyins": "lòu"
   },
   {
     "Hanzis": "死",
-    "Significados": "death, die", // Translated
+    "Significados": "death, die",
     "Piyins": "sǐ"
   },
   {
     "Hanzis": "脫",
-    "Significados": "release, liberation through understanding", // Translated
+    "Significados": "release, liberation through understanding",
     "Piyins": "tuō"
   },
   {
     "Hanzis": "羅",
-    "Significados": "phonetic, e.g., arahat", // Translated
+    "Significados": "phonetic, e.g., arahat",
     "Piyins": "luó"
   },
   {
     "Hanzis": "取",
-    "Significados": "attachment, cling, grasp", // Translated
+    "Significados": "attachment, cling, grasp",
     "Piyins": "qǔ"
   },
   {
     "Hanzis": "現",
-    "Significados": "present, now, appear", // Translated
+    "Significados": "present, now, appear",
     "Piyins": "xiàn"
   },
   {
     "Hanzis": "起",
-    "Significados": "arise, elicit, cause", // Translated
+    "Significados": "arise, elicit, cause",
     "Piyins": "qǐ"
   },
   {
     "Hanzis": "依",
-    "Significados": "rely on..., foundation", // Translated
+    "Significados": "rely on..., foundation",
     "Piyins": "yī"
   },
   {
     "Hanzis": "諦",
-    "Significados": "truth (two truths)", // Translated
+    "Significados": "truth (two truths)",
     "Piyins": "dì"
   },
   {
     "Hanzis": "雖",
-    "Significados": "even if, although", // Translated
+    "Significados": "even if, although",
     "Piyins": "suī"
   },
   {
     "Hanzis": "界",
-    "Significados": "world, loka, spheres (dhatu)", // Translated
+    "Significados": "world, loka, spheres (dhatu)",
     "Piyins": "jiè"
   },
   {
     "Hanzis": "覺",
-    "Significados": "awaken, wake up", // Translated
+    "Significados": "awaken, wake up",
     "Piyins": "jué"
   },
   {
     "Hanzis": "觸",
-    "Significados": "contact, sparśa, phassa", // Translated
+    "Significados": "contact, sparśa, phassa",
     "Piyins": "chù"
   },
   {
     "Hanzis": "戒",
-    "Significados": "vinaya, monastic discipline", // Translated
+    "Significados": "vinaya, monastic discipline",
     "Piyins": "jiè"
   },
   {
     "Hanzis": "福",
-    "Significados": "happiness, (worldly) benefit", // Translated
+    "Significados": "happiness, (worldly) benefit",
     "Piyins": "fú"
   },
   {
     "Hanzis": "來",
-    "Significados": "come, came", // Translated
+    "Significados": "come, came",
     "Piyins": "lái"
   },
   {
     "Hanzis": "語",
-    "Significados": "language, Buddha's discourse", // Translated
+    "Significados": "language, Buddha's discourse",
     "Piyins": "yǔ"
   },
   {
     "Hanzis": "果",
-    "Significados": "fruit (both worldly and non-worldly), result", // Translated
+    "Significados": "fruit (both worldly and non-worldly), result",
     "Piyins": "guǒ"
   },
   {
     "Hanzis": "先",
-    "Significados": "first, ancient, previous", // Translated
+    "Significados": "first, ancient, previous",
     "Piyins": "xiān"
   },
   {
     "Hanzis": "聞",
-    "Significados": "hear / well-known / smell", // Translated
+    "Significados": "hear / well-known / smell",
     "Piyins": "wén"
   },
   {
     "Hanzis": "義",
-    "Significados": "correct conduct, justice", // Translated
+    "Significados": "correct conduct, justice",
     "Piyins": "yì"
   },
   {
     "Hanzis": "論",
-    "Significados": "debate, treatise, opinion, theory", // Translated
+    "Significados": "debate, treatise, opinion, theory",
     "Piyins": "lùn"
   },
   {
     "Hanzis": "聲",
-    "Significados": "sound, voice, hear", // Translated
+    "Significados": "sound, voice, hear",
     "Piyins": "shēng"
   },
   {
     "Hanzis": "與",
-    "Significados": "and, with", // Translated
+    "Significados": "and, with",
     "Piyins": "yǔ"
   },
   {
     "Hanzis": "未",
-    "Significados": "not yet, future", // Translated
+    "Significados": "not yet, future",
     "Piyins": "wèi"
   },
   {
     "Hanzis": "及",
-    "Significados": "and this, and that", // Translated
+    "Significados": "and this, and that",
     "Piyins": "jí"
   },
   {
     "Hanzis": "邪",
-    "Significados": "false, heterodox, perverse", // Translated
+    "Significados": "false, heterodox, perverse",
     "Piyins": "xié"
   },
   {
     "Hanzis": "他",
-    "Significados": "he, other thing, other person", // Translated
+    "Significados": "he, other thing, other person",
     "Piyins": "tā"
   },
   {
     "Hanzis": "已",
-    "Significados": "already occurred, already", // Translated
+    "Significados": "already occurred, already",
     "Piyins": "yǐ"
   },
   {
     "Hanzis": "間",
-    "Significados": "temporal interval, spatial interval", // Translated
+    "Significados": "temporal interval, spatial interval",
     "Piyins": "jiān"
   },
   {
     "Hanzis": "力",
-    "Significados": "force, power", // Translated
+    "Significados": "force, power",
     "Piyins": "lì"
   },
   {
     "Hanzis": "次",
-    "Significados": "sequence, next", // Translated
+    "Significados": "sequence, next",
     "Piyins": "cì"
   },
   {
     "Hanzis": "阿",
-    "Significados": "phonetic 'a'", // Translated
+    "Significados": "phonetic 'a'",
     "Piyins": "ā"
   },
   {
     "Hanzis": "思",
-    "Significados": "think, consider, thought", // Translated
+    "Significados": "think, consider, thought",
     "Piyins": "sī"
   },
   {
     "Hanzis": "愛",
-    "Significados": "desire with attachment, desire, love", // Translated
+    "Significados": "desire with attachment, desire, love",
     "Piyins": "ài"
   },
   {
     "Hanzis": "捨",
-    "Significados": "abandon, detachment", // Translated
+    "Significados": "abandon, detachment",
     "Piyins": "shě"
   },
   {
     "Hanzis": "去",
-    "Significados": "already passed, past", // Translated
+    "Significados": "already passed, past",
     "Piyins": "qù"
   },
   {
     "Hanzis": "壞",
-    "Significados": "undo, break", // Translated
+    "Significados": "undo, break",
     "Piyins": "huài"
   },
   {
     "Hanzis": "假",
-    "Significados": "nominal, fictitious", // Translated
+    "Significados": "nominal, fictitious",
     "Piyins": "jiǎ"
   },
   {
     "Hanzis": "殺",
-    "Significados": "kill", // Translated
+    "Significados": "kill",
     "Piyins": "shā"
   },
   {
     "Hanzis": "物",
-    "Significados": "things in general", // Translated
+    "Significados": "things in general",
     "Piyins": "wù"
   },
   {
     "Hanzis": "性",
-    "Significados": "svabhava, own nature", // Translated
+    "Significados": "svabhava, own nature",
     "Piyins": "xìng"
   },
   {
     "Hanzis": "至",
-    "Significados": "reach, arrive", // Translated
+    "Significados": "reach, arrive",
     "Piyins": "zhì"
   },
   {
     "Hanzis": "住",
-    "Significados": "inhabit, stability", // Translated
+    "Significados": "inhabit, stability",
     "Piyins": "zhù"
   },
   {
     "Hanzis": "初",
-    "Significados": "first, beginning", // Translated
+    "Significados": "first, beginning",
     "Piyins": "chū"
   },
   {
     "Hanzis": "上",
-    "Significados": "above, up", // Translated
+    "Significados": "above, up",
     "Piyins": "shàng"
   },
   {
     "Hanzis": "食",
-    "Significados": "eat, food, feed", // Translated
+    "Significados": "eat, food, feed",
     "Piyins": "shí"
   },
   {
     "Hanzis": "天",
-    "Significados": "deva world, heaven", // Translated
+    "Significados": "deva world, heaven",
     "Piyins": "tiān"
   },
   {
     "Hanzis": "復",
-    "Significados": "repeat, or yet, return", // Translated
+    "Significados": "repeat, or yet, return",
     "Piyins": "fù"
   },
   {
     "Hanzis": "六",
-    "Significados": "6, six", // Translated
+    "Significados": "6, six",
     "Piyins": "liù"
   },
   {
     "Hanzis": "信",
-    "Significados": "trust, śraddhā", // Translated
+    "Significados": "trust, śraddhā",
     "Piyins": "xìn"
   },
   {
     "Hanzis": "數",
-    "Significados": "number, several, frequently", // Translated
+    "Significados": "number, several, frequently",
     "Piyins": "shǔ"
   },
   {
     "Hanzis": "聖",
-    "Significados": "sage, arya pudgala, 4 noble truths", // Translated
+    "Significados": "sage, arya pudgala, 4 noble truths",
     "Piyins": "shèng"
   },
   {
     "Hanzis": "施",
-    "Significados": "offering, offer", // Translated
+    "Significados": "offering, offer",
     "Piyins": "shī"
   },
   {
     "Hanzis": "出",
-    "Significados": "exit, recluse, rupture", // Translated
+    "Significados": "exit, recluse, rupture",
     "Piyins": "chū"
   },
   {
     "Hanzis": "洹",
-    "Significados": "another phonetic way to compose the word nirvana", // Translated
+    "Significados": "another phonetic way to compose the word nirvana",
     "Piyins": "huán"
   },
   {
     "Hanzis": "堅",
-    "Significados": "solidity", // Translated
+    "Significados": "solidity",
     "Piyins": "jiān"
   },
   {
     "Hanzis": "使",
-    "Significados": "klesha, cause, make", // Translated
+    "Significados": "klesha, cause, make",
     "Piyins": "shǐ"
   },
   {
     "Hanzis": "火",
-    "Significados": "heat, fire", // Translated
+    "Significados": "heat, fire",
     "Piyins": "huǒ"
   },
   {
     "Hanzis": "集",
-    "Significados": "truth of origin, collection", // Translated
+    "Significados": "truth of origin, collection",
     "Piyins": "jí"
   },
   {
@@ -1112,7 +1120,7 @@ const data = [
   },
   {
     "Hanzis": "差",
-    "Significados": "distinction, difference", // Translated
+    "Significados": "distinction, difference",
     "Piyins": "chā"
   },
   {
@@ -1127,117 +1135,117 @@ const data = [
   },
   {
     "Hanzis": "疑",
-    "Significados": "doubt, suspect, indecision", // Translated
+    "Significados": "doubt, suspect, indecision",
     "Piyins": "yí"
   },
   {
     "Hanzis": "水",
-    "Significados": "water, liquidity, fluidity", // Translated
+    "Significados": "water, liquidity, fluidity",
     "Piyins": "shuǐ"
   },
   {
     "Hanzis": "足",
-    "Significados": "foot, excessive, sufficient", // Translated
+    "Significados": "foot, excessive, sufficient",
     "Piyins": "jù"
   },
   {
     "Hanzis": "今",
-    "Significados": "present, now, today", // Translated
+    "Significados": "present, now, today",
     "Piyins": "jīn"
   },
   {
     "Hanzis": "習",
-    "Significados": "practice, study", // Translated
+    "Significados": "practice, study",
     "Piyins": "xí"
   },
   {
     "Hanzis": "其",
-    "Significados": "this, such that", // Translated
+    "Significados": "this, such that",
     "Piyins": "qí"
   },
   {
     "Hanzis": "深",
-    "Significados": "deep", // Translated
+    "Significados": "deep",
     "Piyins": "shēn"
   },
   {
     "Hanzis": "外",
-    "Significados": "outside, tirthika", // Translated
+    "Significados": "outside, tirthika",
     "Piyins": "wài"
   },
   {
     "Hanzis": "口",
-    "Significados": "mouth", // Translated
+    "Significados": "mouth",
     "Piyins": "kǒu"
   },
   {
     "Hanzis": "著",
-    "Significados": "attachment", // Translated
+    "Significados": "attachment",
     "Piyins": "zhāo"
   },
   {
     "Hanzis": "漢",
-    "Significados": "Han Ethnicity, used for transliteration", // Translated
+    "Significados": "Han Ethnicity, used for transliteration",
     "Piyins": "hàn"
   },
   {
     "Hanzis": "味",
-    "Significados": "Taste, also transliteration", // Translated
+    "Significados": "Taste, also transliteration",
     "Piyins": "wèi"
   },
   {
     "Hanzis": "陀",
-    "Significados": "Decline, Amitabha", // Translated
+    "Significados": "Decline, Amitabha",
     "Piyins": "tuó"
   },
   {
     "Hanzis": "夫",
-    "Significados": "man, husband", // Translated
+    "Significados": "man, husband",
     "Piyins": "fū"
   },
   {
     "Hanzis": "結",
-    "Significados": "produce, fruit", // Translated
+    "Significados": "produce, fruit",
     "Piyins": "jiē"
   },
   {
     "Hanzis": "德",
-    "Significados": "virtue, morality", // Translated
+    "Significados": "virtue, morality",
     "Piyins": "dé"
   },
   {
     "Hanzis": "到",
-    "Significados": "to, reach, realize", // Translated
+    "Significados": "to, reach, realize",
     "Piyins": "dào"
   },
   {
     "Hanzis": "風",
-    "Significados": "wind, mobility", // Translated
+    "Significados": "wind, mobility",
     "Piyins": "fēng"
   },
   {
     "Hanzis": "凡",
-    "Significados": "ordinary, ignorant", // Translated
+    "Significados": "ordinary, ignorant",
     "Piyins": "fán"
   },
   {
     "Hanzis": "命",
-    "Significados": "compassion, life", // Translated
+    "Significados": "compassion, life",
     "Piyins": "mìng"
   },
   {
     "Hanzis": "重",
-    "Significados": "layer, heavy, repeated", // Translated
+    "Significados": "layer, heavy, repeated",
     "Piyins": "chóng"
   },
   {
     "Hanzis": "獄",
-    "Significados": "prison, prisoner", // Translated
+    "Significados": "prison, prisoner",
     "Piyins": "yù"
   },
   {
     "Hanzis": "癡",
-    "Significados": "foolish, avidya, ignorance", // Translated
+    "Significados": "foolish, avidya, ignorance",
     "Piyins": "chī"
   },
 {
@@ -1489,73 +1497,105 @@ const data = [
 
 let score = 0;
 let mistakes = 0;
-let currentGoal = 63;
+let currentIndex = 0; // Index to track the current Hanzi in sequence
 let currentQuestion = {};
 let allMeanings = [];
-let dataSubset = data.slice(0, currentGoal); // Start with the first 63
+const totalHanzi = data.length; // Total number of Hanzi
 
 function init() {
-allMeanings = [...new Set(data.flatMap(item => item.Significados.toString().split(/[,|]/).map(s => s.trim()).filter(s => s)))]; // Adjusted split for both , and |
-nextQuestion();
+    // Extract all unique meanings for generating distractors
+    allMeanings = [...new Set(data.flatMap(item => {
+        if (typeof item.Significados === 'string') {
+            return item.Significados.split(/[,|]/).map(s => s.trim()).filter(s => s);
+        }
+        return []; // Return empty array if Significados is not a string
+    }))];
+
+    document.getElementById('goal').innerText = totalHanzi; // Display total count
+    document.getElementById('completion-message').style.display = 'none'; // Hide completion message initially
+    currentIndex = 0; // Ensure we start from the beginning on init/reload
+    score = 0;
+    mistakes = 0;
+    updateScore();
+    displayQuestion(currentIndex); // Display the first question
 }
 
-function nextQuestion() {
-if (score >= currentGoal) {
-    if (dataSubset.length < data.length){
-        currentGoal++;
-        dataSubset = data.slice(0, currentGoal);
-        document.getElementById('goal').innerText = currentGoal;
-    } else {
-        alert(`Congratulations! You reached the goal of ${currentGoal} correct answers!`); // Translated alert
+function displayQuestion(index) {
+    if (index >= totalHanzi) {
+        // End of the list
+        document.getElementById('hanzi').innerText = '';
+        document.getElementById('pinyin').innerText = '';
+        document.getElementById('answers').innerHTML = '';
+        document.getElementById('completion-message').style.display = 'block'; // Show completion message
+        // Optionally, disable further actions or provide a restart button
         return;
     }
-}
 
-// Ensure currentQuestion has a valid 'Significados' string
-do {
-    currentQuestion = dataSubset[Math.floor(Math.random() * dataSubset.length)];
-} while (!currentQuestion || typeof currentQuestion.Significados !== 'string');
+    currentQuestion = data[index];
 
-const meanings = currentQuestion.Significados.split(/[,|]/).map(s => s.trim()).filter(s => s); // Adjusted split
-const correctAnswer = meanings[0]; // Take the first meaning as the correct one
-const filteredMeanings = allMeanings.filter(m => !meanings.includes(m)); // Exclude all meanings of the current Hanzi
-const options = shuffle([correctAnswer, ...shuffle(filteredMeanings).slice(0, 3)]);
+    // Ensure currentQuestion and Significados are valid
+    if (!currentQuestion || typeof currentQuestion.Significados !== 'string') {
+        console.error("Invalid question data at index:", index);
+        // Skip to the next question or handle error appropriately
+        currentIndex++;
+        displayQuestion(currentIndex);
+        return;
+    }
 
+    const meanings = currentQuestion.Significados.split(/[,|]/).map(s => s.trim()).filter(s => s);
+    const correctAnswer = meanings[0]; // Use the first meaning as the correct answer
 
-document.getElementById('hanzi').innerText = currentQuestion.Hanzis;
-document.getElementById('pinyin').innerText = currentQuestion.Piyins;
-document.getElementById('answers').innerHTML = options.map(option => `
-<button onclick="checkAnswer('${option}')">${option}</button>
-`).join('');
+    // Filter out all meanings associated with the current Hanzi for distractors
+    const filteredMeanings = allMeanings.filter(m => !meanings.includes(m));
+    // Generate options: the correct answer + 3 random distractors
+    const options = shuffle([correctAnswer, ...shuffle(filteredMeanings).slice(0, 3)]);
+
+    document.getElementById('hanzi').innerText = currentQuestion.Hanzis;
+    document.getElementById('pinyin').innerText = currentQuestion.Piyins;
+    document.getElementById('answers').innerHTML = options.map(option =>
+        `<button onclick="checkAnswer('${option.replace(/'/g, "\\'")}')">${option}</button>` // Escape single quotes in options
+    ).join('');
+    document.getElementById('completion-message').style.display = 'none'; // Ensure completion message is hidden during quiz
 }
 
 function checkAnswer(selectedAnswer) {
-const meanings = currentQuestion.Significados.split(/[,|]/).map(s => s.trim()).filter(s => s); // Adjusted split
-const correctAnswer = meanings[0];
+    // Ensure currentQuestion and Significados are valid before checking
+     if (!currentQuestion || typeof currentQuestion.Significados !== 'string') {
+        console.error("Cannot check answer, invalid current question.");
+        // Maybe move to next question or show an error
+        currentIndex++;
+        displayQuestion(currentIndex);
+        return;
+    }
 
-if (selectedAnswer === correctAnswer) {
-score++;
-} else {
-mistakes++;
-}
+    const meanings = currentQuestion.Significados.split(/[,|]/).map(s => s.trim()).filter(s => s);
+    const correctAnswer = meanings[0];
 
-updateScore();
-nextQuestion();
+    if (selectedAnswer === correctAnswer) {
+        score++;
+    } else {
+        mistakes++;
+    }
+
+    updateScore();
+    currentIndex++; // Move to the next Hanzi in sequence
+    displayQuestion(currentIndex); // Display the next question
 }
 
 function updateScore() {
-document.getElementById('score').innerText = score;
-document.getElementById('mistakes').innerText = mistakes;
+    document.getElementById('score').innerText = score;
+    document.getElementById('mistakes').innerText = mistakes;
 }
 
 function shuffle(array) {
-for (let i = array.length - 1; i > 0; i--) {
-const j = Math.floor(Math.random() * (i + 1));
-[array[i], array[j]] = [array[j], array[i]];
-}
-return array;
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
 }
 
+// Initialize the quiz when the page loads
 init();
 </script>
 </body>
