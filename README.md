@@ -2,33 +2,29 @@
 
 ## Description
 
-This project is a simple web-based quiz designed to help users memorize essential Hanzi (Chinese characters) found in Harivarman's *Satyasiddhiśāstra* (成實論 - *Chengshilun*).
+This project offers a simple, web-based quiz, the aim of which is to assist users in the memorisation of essential Hanzi (Chinese characters) encountered in Harivarman's *Satyasiddhiśāstra* (成實論 - *Chengshilun*).
 
-The quiz currently includes **316** unique Hanzi, which represent approximately 80% of the characters used throughout the entire text.
+The quiz presently incorporates **316** Hanzi. It is understood that these represent in the region of 80% of the characters employed throughout the original text.
 
 ## Purpose
 
-The primary goal of this tool is to facilitate the memorization of the most frequent Hanzi within the *Satyasiddhiśāstra*. By becoming familiar with these characters, users can hopefully enhance their study of the text and potentially contribute to a better understanding or even improved translations in the future.
+The principal aspiration behind this tool is to somewhat ease the process of memorising the more frequent Hanzi within the *Satyasiddhiśāstra*. It is sincerely hoped that by becoming rather more familiar with these characters, users might find their study of the text enhanced, and perhaps feel better equipped to appreciate the nuances of the original work or even contribute towards future translation efforts.
 
-This is particularly relevant as the currently available English translation, while having its merits, is often considered to have room for improvement. This tool aims to provide a foundational step for those wishing to engage more deeply with the original Chinese text.
+This endeavour seems potentially worthwhile, as existing English translations, whilst certainly valuable and possessing their own merits, perhaps do not always capture every subtlety of Harivarman's original discourse. This tool, therefore, humbly aims to provide a foundational step for those wishing to engage more deeply with the Chinese text.
 
 ## Usage
 
-You can use the quiz directly online at:
+The quiz may be accessed directly online at your convenience:
 [https://pj-oliveira.github.io/Chengshilun/](https://pj-oliveira.github.io/Chengshilun/)
 
-The Hanzi are presented sequentially according to their frequency or order within the source text analysis used to generate the list. For each Hanzi, you are presented with multiple-choice options for its meaning. Choose the correct one to proceed.
+The Hanzi are presented in a sequential manner, reflecting their presumed frequency or order derived from the textual analysis underpinning the list. For each Hanzi, a selection of possible meanings is offered. One simply chooses the option deemed correct in order to proceed.
 
 ## Contributing & Feedback
 
-Suggestions for improvement are welcome! This includes:
+Feedback and suggestions for improvement would be most gratefully received. Translating classical terminology and ensuring accuracy is, of course, a considerable challenge, and I readily acknowledge that my own interpretations or the code itself may contain errors or areas ripe for refinement.
 
-* Refinements or corrections to the English meanings provided for the Hanzi.
-* Improvements to the quiz code (HTML, CSS, JavaScript).
-* Bug reports.
-
-If you have any feedback or suggestions, please feel free to reach out.
+Therefore, should you happen to notice any potential inaccuracies – particularly concerning the nuances of the Hanzi meanings – or perhaps envision ways to enhance the quiz's code (HTML, CSS, JavaScript), I would be truly appreciative if you would kindly share your thoughts. Naturally, notification of any technical difficulties ('bugs') encountered would also be very helpful.
 
 **Contact:**
 
-* [Please add your preferred contact method here - e.g., GitHub issues, email address, etc.]
+* Should you wish to offer feedback or suggestions, please do feel free to reach out. [Kindly insert your preferred contact method here - e.g., via GitHub issues, an email address, etc.]
