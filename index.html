@@ -1504,12 +1504,7 @@ let allMeanings = [];
 const totalHanzi = data.length; // Total number of Hanzi
 
 function init() {
-    allMeanings = [...new Set(data.flatMap(item => {
-        if (typeof item.Meanings === 'string') {
-            return item.Meanings.split(/[,|]/).map(s => s.trim()).filter(s => s);
-        }
-        return []; // Return empty array if Meanings is not a string
-    }))];
+  allMeanings = data.map(item => item.Meanings).filter(Boolean); // Use cada significado completo
 
     document.getElementById('goal').innerText = totalHanzi; // Display total count
     document.getElementById('completion-message').style.display = 'none'; // Hide completion message initially
@@ -1533,10 +1528,10 @@ function displayQuestion(index) {
     currentQuestion = data[index];
 
     const meanings = currentQuestion.Meanings.split(/[,|]/).map(s => s.trim()).filter(s => s);
-    const correctAnswer = meanings[0]; // Use the first meaning as the correct answer
+    const correctAnswer = currentQuestion.Meanings;
 
     // Filter out all meanings associated with the current Hanzi for distractors
-    const filteredMeanings = allMeanings.filter(m => !meanings.includes(m));
+    const filteredMeanings = allMeanings.filter(m => m !== correctAnswer);
     // Generate options: the correct answer + 3 random distractors
     const options = shuffle([correctAnswer, ...shuffle(filteredMeanings).slice(0, 3)]);
 
