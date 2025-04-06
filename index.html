@@ -91,6 +91,7 @@
             <p>Mistakes: <span id="mistakes">0</span></p>
             <p>Total Hanzi: <span id="goal">0</span></p>
             <p>Correct: <span id="score">0</span></p>
+            <p>Attempts Left: <span id="attempts">3</span></p> <!-- Add this line -->
         </div>
         <div id="completion-message">Congratulations! You have completed all Hanzi!</div>
     </div>
@@ -1505,6 +1506,7 @@
         /**
          * Quiz state variables
          */
+        let attemptsRemaining = 3;
         let score = 0; // Tracks the number of correct answers
         let mistakes = 0; // Tracks the number of mistakes
         let currentIndex = 0; // Tracks the current Hanzi in the sequence
@@ -1533,12 +1535,14 @@
         /**
          * Resets game state variables to their initial values
          */
-        function resetGameState() {
-            currentIndex = 0;
-            score = 0;
-            mistakes = 0;
-            updateScoreDisplay();
-            hideCompletionMessage();
+         function resetGameState() {
+            currentIndex = 0; // Reset the question index
+            score = 0;       // Reset the score
+            mistakes = 0;    // Reset the mistake count
+            attemptsRemaining = 3; // Reset attempts for the first question
+            updateScoreDisplay();  // Update the score and mistakes display
+            updateAttemptsDisplay(); // Update the attempts display to show 3 attempts
+            hideCompletionMessage(); // Hide the completion message if it was shown
         }
 
         /**
@@ -1552,17 +1556,31 @@
          * Displays the current Hanzi question
          * @param {number} index - The index of the current question in the data array
          */
-        function displayQuestion(index) {
+         function displayQuestion(index) {
+            // Check if all questions have been answered
             if (index >= totalHanzi) {
                 handleQuizCompletion();
                 return;
             }
-
-            currentQuestion = data[index]; // Get the current question object
-            const correctAnswer = currentQuestion.Meanings; // Correct answer
-            const answerOptions = generateAnswerOptions(correctAnswer); // Generate answer choices
-
-            populateQuestionUI(correctAnswer, answerOptions); // Populate UI with question and answers
+        
+            // Set the current question and reset attempts
+            currentQuestion = data[index];
+            attemptsRemaining = 3; // Reset attempts for the new question
+            updateAttemptsDisplay(); // Update the UI to show the remaining attempts
+        
+            // Extract the correct answer and generate randomized answer options
+            const correctAnswer = currentQuestion.Meanings;
+            const answerOptions = generateAnswerOptions(correctAnswer);
+        
+            // Populate the UI with the current question and answer choices
+            populateQuestionUI(correctAnswer, answerOptions);
+        }
+        
+        /**
+        * Updates the display for the remaining attempts.
+        */
+        function updateAttemptsDisplay() {
+            document.getElementById('attempts').innerText = attemptsRemaining; // Update the UI element
         }
 
         /**
@@ -1592,17 +1610,28 @@
          * Handles the user's answer selection
          * @param {string} selectedAnswer - The answer chosen by the user
          */
-        function checkAnswer(selectedAnswer) {
-            const correctAnswer = currentQuestion.Meanings;
+         function checkAnswer(selectedAnswer) {
+            const correctAnswer = currentQuestion.Meanings; // Get the correct answer
+        
             if (selectedAnswer === correctAnswer) {
+                // If the answer is correct, increase the score and move to the next question
                 score++;
+                updateScoreDisplay();
+                currentIndex++;
+                displayQuestion(currentIndex); // Display the next question
             } else {
-                mistakes++;
+                // Decrease the remaining attempts if the answer is incorrect
+                attemptsRemaining--;
+                updateAttemptsDisplay(); // Update the UI to show the remaining attempts
+        
+                // If no attempts are left, count it as a mistake and move to the next question
+                if (attemptsRemaining === 0) {
+                    mistakes++;
+                    updateScoreDisplay();
+                    currentIndex++;
+                    displayQuestion(currentIndex); // Display the next question
+                }
             }
-
-            updateScoreDisplay();
-            currentIndex++;
-            displayQuestion(currentIndex);
         }
 
         /**
