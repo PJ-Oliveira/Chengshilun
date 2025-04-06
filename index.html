@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>成實論 - Chengshilun Hanzi</title>
 <style>
+/* Styling for the game interface */
 body {
   background-color: #e2be8b;
   font-family: Arial, sans-serif;
@@ -93,6 +94,9 @@ h1 {
 </div>
 
 <script>
+/**
+ * Hanzi data containing the characters, their pinyin, and meanings
+ */
 const data = [
 {
   "Hanzis": "是",
@@ -1496,82 +1500,157 @@ const data = [
 }
 ];
 
-let score = 0;
-let mistakes = 0;
-let currentIndex = 0; // Index to track the current Hanzi in sequence
-let currentQuestion = {};
-let allMeanings = [];
-const totalHanzi = data.length; // Total number of Hanzi
+/**
+ * Quiz state variables
+ */
+let score = 0; // Tracks the number of correct answers
+let mistakes = 0; // Tracks the number of mistakes
+let currentIndex = 0; // Tracks the current Hanzi in the sequence
+let currentQuestion = {}; // Holds the current Hanzi question object
+let allMeanings = []; // Stores all possible meanings for creating answer choices
+const totalHanzi = data.length; // Total number of Hanzi in the quiz
 
+/**
+ * Initializes the quiz game
+ */
 function init() {
-  allMeanings = data.map(item => item.Meanings).filter(Boolean); // Use cada significado completo
-
-    document.getElementById('goal').innerText = totalHanzi; // Display total count
-    document.getElementById('completion-message').style.display = 'none'; // Hide completion message initially
-    currentIndex = 0; // Ensure we start from the beginning on init/reload
-    score = 0;
-    mistakes = 0;
-    updateScore();
-    displayQuestion(currentIndex); // Display the first question
+  allMeanings = extractAllMeanings(); // Extract all meanings from the data
+  resetGameState(); // Reset score, mistakes, and other state variables
+  updateTotalHanziCount(); // Display the total count of Hanzi
+  displayQuestion(currentIndex); // Display the first question
 }
 
+/**
+ * Extracts all meanings from the Hanzi data
+ * @returns {Array} List of all meanings
+ */
+function extractAllMeanings() {
+  return data.map(item => item.Meanings).filter(Boolean);
+}
+
+/**
+ * Resets game state variables to their initial values
+ */
+function resetGameState() {
+  currentIndex = 0;
+  score = 0;
+  mistakes = 0;
+  updateScoreDisplay();
+  hideCompletionMessage();
+}
+
+/**
+ * Updates the total Hanzi count on the interface
+ */
+function updateTotalHanziCount() {
+  document.getElementById('goal').innerText = totalHanzi;
+}
+
+/**
+ * Displays the current Hanzi question
+ * @param {number} index - The index of the current question in the data array
+ */
 function displayQuestion(index) {
   if (index >= totalHanzi) {
-      if (mistakes === 0) {
-          displayCompletionMessage();
-      } else {
-          init();
-      }
-      return;
+    handleQuizCompletion();
+    return;
   }
 
-  currentQuestion = data[index];
-  const correctAnswer = currentQuestion.Meanings;
-  const filteredMeanings = allMeanings.filter(m => m !== correctAnswer);
-  const options = shuffle([correctAnswer, ...shuffle(filteredMeanings).slice(0, 3)]);
+  currentQuestion = data[index]; // Get the current question object
+  const correctAnswer = currentQuestion.Meanings; // Correct answer
+  const answerOptions = generateAnswerOptions(correctAnswer); // Generate answer choices
 
-  document.getElementById('hanzi').innerText = currentQuestion.Hanzis;
-  document.getElementById('pinyin').innerText = currentQuestion.Piyins;
-  document.getElementById('answers').innerHTML = options.map(option =>
-      `<button onclick="checkAnswer('${option.replace(/'/g, "\\'")}')">${option}</button>`
-  ).join('');
-  document.getElementById('completion-message').style.display = 'none';
+  populateQuestionUI(correctAnswer, answerOptions); // Populate UI with question and answers
 }
 
+/**
+ * Generates a shuffled list of answer options including the correct answer
+ * @param {string} correctAnswer - The correct meaning for the current Hanzi
+ * @returns {Array} Shuffled list of answer options
+ */
+function generateAnswerOptions(correctAnswer) {
+  const filteredMeanings = allMeanings.filter(m => m !== correctAnswer); // Exclude the correct answer from distractors
+  return shuffle([correctAnswer, ...shuffle(filteredMeanings).slice(0, 3)]); // Add correct answer + 3 distractors
+}
+
+/**
+ * Populates the UI with the current question and answers
+ * @param {string} correctAnswer - The correct answer for the Hanzi
+ * @param {Array} answerOptions - List of shuffled answer options
+ */
+function populateQuestionUI(correctAnswer, answerOptions) {
+  document.getElementById('hanzi').innerText = currentQuestion.Hanzis; // Display Hanzi
+  document.getElementById('pinyin').innerText = currentQuestion.Piyins; // Display Pinyin
+  document.getElementById('answers').innerHTML = answerOptions.map(option =>
+    `<button onclick="checkAnswer('${option.replace(/'/g, "\\'")}')">${option}</button>` // Create buttons for answers
+  ).join('');
+}
+
+/**
+ * Handles the user's answer selection
+ * @param {string} selectedAnswer - The answer chosen by the user
+ */
 function checkAnswer(selectedAnswer) {
   const correctAnswer = currentQuestion.Meanings;
   if (selectedAnswer === correctAnswer) {
-      score++;
+    score++;
   } else {
-      mistakes++;
+    mistakes++;
   }
 
-  updateScore();
+  updateScoreDisplay();
   currentIndex++;
   displayQuestion(currentIndex);
 }
 
-function updateScore() {
-    document.getElementById('score').innerText = score;
-    document.getElementById('mistakes').innerText = mistakes;
+/**
+ * Updates the score and mistakes display on the interface
+ */
+function updateScoreDisplay() {
+  document.getElementById('score').innerText = score;
+  document.getElementById('mistakes').innerText = mistakes;
 }
 
+/**
+ * Handles quiz completion logic
+ */
+function handleQuizCompletion() {
+  if (mistakes === 0) {
+    displayCompletionMessage();
+  } else {
+    init(); // Restart the quiz in case of mistakes
+  }
+}
+
+/**
+ * Displays the completion message
+ */
+function displayCompletionMessage() {
+  document.getElementById('completion-message').style.display = 'block';
+  setTimeout(init, 2000); // Restart the quiz after 2 seconds
+}
+
+/**
+ * Hides the completion message
+ */
+function hideCompletionMessage() {
+  document.getElementById('completion-message').style.display = 'none';
+}
+
+/**
+ * Shuffles an array randomly
+ * @param {Array} array - The array to shuffle
+ * @returns {Array} Shuffled array
+ */
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [array[i], array[j]] = [array[j], array[i]];
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
   }
   return array;
 }
 
-function displayCompletionMessage() {
-    document.getElementById('completion-message').style.display = 'block';
-    setTimeout(() => {
-        init(); // Restart the quiz automatically after a few seconds
-    }, 2000); // Display the message for 2 seconds
-}
-
-// Initialize the quiz when the page loads
+// Initialize the quiz game when the page loads
 init();
 </script>
 </body>
