@@ -1563,16 +1563,18 @@
                 return;
             }
         
-            // Set the current question and reset attempts
+            // Get the current question
             currentQuestion = data[index];
-            attemptsRemaining = 3; // Reset attempts for the new question
-            updateAttemptsDisplay(); // Update the UI to show the remaining attempts
+            attemptsRemaining = 3; // Reset the number of attempts
+            updateAttemptsDisplay(); // Update the interface to show remaining attempts
         
-            // Extract the correct answer and generate randomized answer options
+            // Get the correct answer
             const correctAnswer = currentQuestion.Meanings;
+        
+            // Generate answer options for the current question
             const answerOptions = generateAnswerOptions(correctAnswer);
         
-            // Populate the UI with the current question and answer choices
+            // Display the question and possible answers in the UI
             populateQuestionUI(correctAnswer, answerOptions);
         }
         
@@ -1611,25 +1613,49 @@
          * @param {string} selectedAnswer - The answer chosen by the user
          */
          function checkAnswer(selectedAnswer) {
-            const correctAnswer = currentQuestion.Meanings; // Get the correct answer
+            const correctAnswer = currentQuestion.Meanings;
+            const buttons = document.querySelectorAll('.answers button');
+        
+            // Disable buttons to prevent further clicks
+            buttons.forEach(button => button.disabled = true);
         
             if (selectedAnswer === correctAnswer) {
-                // If the answer is correct, increase the score and move to the next question
                 score++;
                 updateScoreDisplay();
-                currentIndex++;
-                displayQuestion(currentIndex); // Display the next question
+                buttons.forEach(button => {
+                    if (button.innerText === correctAnswer) {
+                        button.style.backgroundColor = 'green'; // Highlight correct answer
+                    }
+                });
+                setTimeout(() => {
+                    currentIndex++;
+                    displayQuestion(currentIndex);
+                }, 500);
             } else {
-                // Decrease the remaining attempts if the answer is incorrect
                 attemptsRemaining--;
-                updateAttemptsDisplay(); // Update the UI to show the remaining attempts
+                updateAttemptsDisplay();
+                buttons.forEach(button => {
+                    if (button.innerText === selectedAnswer) {
+                        button.style.backgroundColor = 'red'; // Highlight selected wrong answer
+                    }
+                });
         
-                // If no attempts are left, count it as a mistake and move to the next question
                 if (attemptsRemaining === 0) {
                     mistakes++;
                     updateScoreDisplay();
-                    currentIndex++;
-                    displayQuestion(currentIndex); // Display the next question
+                    buttons.forEach(button => {
+                        if (button.innerText === correctAnswer) {
+                            button.style.backgroundColor = 'green'; // Highlight correct answer
+                        }
+                    });
+                    setTimeout(() => {
+                        currentIndex++;
+                        displayQuestion(currentIndex);
+                    }, 500);
+                } else {
+                    setTimeout(() => {
+                        buttons.forEach(button => button.disabled = false); // Re-enable buttons
+                    }, 500);
                 }
             }
         }
@@ -1685,5 +1711,4 @@
         init();
     </script>
 </body>
-
 </html>
