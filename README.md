@@ -4,7 +4,7 @@
 
 This project offers a simple, web-based quiz, the aim of which is to assist users in the memorisation of essential Hanzi (Chinese characters) encountered in Harivarman's *Satyasiddhiśāstra* (成實論 - *Chengshilun*).
 
-The quiz presently incorporates **316** Hanzi. It is understood that these represent in the region of 80% of the characters employed throughout the original text.
+The quiz presently incorporates **280** Hanzi. It is understood that these represent in the region of 80% of the characters employed throughout the original text.
 
 ## Purpose
 
