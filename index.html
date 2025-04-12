@@ -89,6 +89,7 @@
         <div class="answers" id="answers"></div>
         <div class="score">
             <p>Mistakes: <span id="mistakes">0</span></p>
+            <p>Total Mistakes: <span id="total-mistakes">0</span></p> <!-- Total mistakes -->
             <p>Total Hanzi: <span id="goal">0</span></p>
             <p>Correct: <span id="score">0</span></p>
             <p>Attempts Left: <span id="attempts">3</span></p> <!-- Add this line -->
@@ -1506,6 +1507,7 @@
         /**
          * Quiz state variables
          */
+         let totalMistakes = 0; 
         let attemptsRemaining = 3;
         let score = 0; // Tracks the number of correct answers
         let mistakes = 0; // Tracks the number of mistakes
@@ -1613,54 +1615,53 @@
          * @param {string} selectedAnswer - The answer chosen by the user
          */
          function checkAnswer(selectedAnswer) {
-            const correctAnswer = currentQuestion.Meanings;
-            const buttons = document.querySelectorAll('.answers button');
-        
-            // Disable buttons to prevent further clicks
-            buttons.forEach(button => button.disabled = true);
-        
-            if (selectedAnswer === correctAnswer) {
-                score++;
-                updateScoreDisplay();
-                buttons.forEach(button => {
-                    if (button.innerText === correctAnswer) {
-                        button.style.backgroundColor = 'green'; // Highlight correct answer
-                    }
-                });
-                setTimeout(() => {
-                    currentIndex++;
-                    displayQuestion(currentIndex);
-                }, 500);
-            } else {
-                attemptsRemaining--;
-                updateAttemptsDisplay();
-                buttons.forEach(button => {
-                    if (button.innerText === selectedAnswer) {
-                        button.style.backgroundColor = 'red'; // Highlight selected wrong answer
-                    }
-                });
-        
-                if (attemptsRemaining === 0) {
-                    mistakes++;
-                    updateScoreDisplay();
-                    buttons.forEach(button => {
-                        if (button.innerText === correctAnswer) {
-                            button.style.backgroundColor = 'green'; // Highlight correct answer
-                        }
-                    });
-                    setTimeout(() => {
-                        currentIndex++;
-                        displayQuestion(currentIndex);
-                    }, 500);
-                } else {
-                    setTimeout(() => {
-                        buttons.forEach(button => button.disabled = false); // Re-enable buttons
-                    }, 500);
-                }
-            }
-        }
-
-        /**
+          const correctAnswer = currentQuestion.Meanings;
+          const buttons = document.querySelectorAll('.answers button');
+      
+          buttons.forEach(button => button.disabled = true);
+      
+          if (selectedAnswer === correctAnswer) {
+              score++;
+              updateScoreDisplay();
+              buttons.forEach(button => {
+                  if (button.innerText === correctAnswer) {
+                      button.style.backgroundColor = 'green';
+                  }
+              });
+              setTimeout(() => {
+                  currentIndex++;
+                  displayQuestion(currentIndex);
+              }, 500);
+          } else {
+              attemptsRemaining--;
+              totalMistakes++; // Increment total mistakes
+              updateAttemptsDisplay();
+              updateTotalMistakesDisplay(); // Update total mistakes display
+              buttons.forEach(button => {
+                  if (button.innerText === selectedAnswer) {
+                      button.style.backgroundColor = 'red';
+                  }
+              });
+      
+              if (attemptsRemaining === 0) {
+                  mistakes++;
+                  updateScoreDisplay();
+                  buttons.forEach(button => {
+                      if (button.innerText === correctAnswer) {
+                          button.style.backgroundColor = 'green';
+                      }
+                  });
+                  setTimeout(() => {
+                      currentIndex++;
+                      displayQuestion(currentIndex);
+                  }, 500);
+              } else {
+                  setTimeout(() => {
+                      buttons.forEach(button => button.disabled = false);
+                  }, 500);
+              }
+          }
+      }        /**
          * Updates the score and mistakes display on the interface
          */
         function updateScoreDisplay() {
@@ -1707,8 +1708,14 @@
             return array;
         }
 
+
+        function updateTotalMistakesDisplay() {
+          document.getElementById('total-mistakes').innerText = totalMistakes;
+      }
+
         // Initialize the quiz game when the page loads
         init();
     </script>
 </body>
+
 </html>
