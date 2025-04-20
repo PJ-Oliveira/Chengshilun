@@ -27,4 +27,4 @@ Therefore, should you happen to notice any potential inaccuracies – particular
 
 **Contact:**
 
-* Should you wish to offer feedback or suggestions, please do feel free to reach out. [Kindly insert your preferred contact method here - e.g., via GitHub issues, an email address, etc.]
+* Should you wish to offer feedback or suggestions, please do feel free to reach out.
