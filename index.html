@@ -1878,10 +1878,12 @@
          * Generates shuffled answer options
          */
          function generateAnswerOptions(correctAnswer) {
-            const allMeanings = data.map(item => item.Meanings).filter(m => m !== correctAnswer);
-            const uniqueOptions = new Set([correctAnswer, ...shuffle(allMeanings).slice(0, 3)]);
-            return Array.from(uniqueOptions);
-        }
+          const allMeanings = data.map(item => item.Meanings).filter(m => m !== correctAnswer);
+          const uniqueOptions = new Set([correctAnswer, ...shuffle(allMeanings).slice(0, 3)]);
+          
+          const shuffledOptions = shuffle(Array.from(uniqueOptions));
+          return shuffledOptions;
+      }
 
         /**
          * Populates the UI with the current question and answers
