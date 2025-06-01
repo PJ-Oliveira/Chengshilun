@@ -1,1986 +1,2569 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>成實論 - Chengshilun Hanzis</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HanziFlow - Dynamic Memorization</title>
     <style>
-        /* Styling for the game interface */
-        body {
-            background-color: #e2be8b;
-            font-family: Arial, sans-serif;
-            color: #333;
-            margin: 0;
-            padding: 0;
-            font-size: 22px;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+      /* General styles for the body */
+      body {
+        background-color: #e0eaf2; /* Um azul muito claro e frio para o fundo */
+        font-family: "Inter", sans-serif; /* Fonte moderna e legível */
+        color: #2c3e50; /* Cor de texto azul-acinzentado escuro e profundo */
+        margin: 0;
+        padding: 0;
+        font-size: 22px;
+        min-height: 100vh; /* Ocupa a altura total da viewport */
+        display: flex;
+        justify-content: center; /* Centraliza horizontalmente */
+        align-items: center; /* Centraliza verticalmente */
+        box-sizing: border-box; /* Inclui padding e borda no cálculo de largura/altura */
+      }
 
+      /* Main content container */
+      .content {
+        text-align: center;
+        padding: 30px;
+        max-width: 900px; /* Largura máxima ligeiramente maior para desktops */
+        width: 90%; /* Largura fluida para responsividade */
+        background-color: #ffffff; /* Fundo branco limpo para o cartão */
+        border-radius: 18px; /* Cantos ligeiramente mais arredondados */
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15); /* Sombra mais pronunciada e suave */
+        box-sizing: border-box; /* Inclui padding e borda no cálculo de largura/altura */
+        transition: all 0.3s ease-in-out; /* Transições suaves para redimensionamento */
+      }
+
+      /* Main title */
+      h1 {
+        color: #1a5276; /* Um azul royal forte e profundo para o título */
+        margin-bottom: 30px;
+        font-size: clamp(
+          30px,
+          5vw,
+          48px
+        ); /* Tamanho de fonte responsivo para o título */
+      }
+
+      /* Style for the displayed hanzi */
+      .hanzi-display {
+        font-size: clamp(
+          80px,
+          20vw,
+          180px
+        ); /* Tamanho muito grande e responsivo para o hanzi */
+        font-weight: bold;
+        margin: 25px 0;
+        text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3); /* Sombra mais suave e maior */
+        line-height: 1; /* Garante que não haja espaço extra acima/abaixo do hanzi */
+        color: #0d47a1; /* Um azul rico e profundo para o próprio hanzi */
+      }
+
+      /* Hanzi information (pinyin and meaning) */
+      .hanzi-info {
+        margin-top: 15px;
+        font-size: clamp(18px, 3.5vw, 28px); /* Tamanho de fonte responsivo */
+        color: #546e7a; /* Um azul-acinzentado ligeiramente mais claro para informações */
+        line-height: 1.6; /* Espaçamento de linha melhorado */
+      }
+
+      .hanzi-info strong {
+        color: #37474f; /* Azul-acinzentado mais escuro para rótulos */
+      }
+
+      /* Container for answer buttons */
+      .answers {
+        margin-top: 25px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px; /* Espaço entre os botões */
+      }
+
+      /* Style for answer buttons */
+      .answers button {
+        background-color: #4a6a9b; /* Um azul royal de tom médio para as opções */
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        margin: 5px; /* Mantém alguma margem para botões individuais */
+        border-radius: 8px; /* Ligeiramente mais arredondado */
+        cursor: pointer;
+        font-size: clamp(
+          16px,
+          3vw,
+          22px
+        ); /* Tamanho de fonte responsivo para os botões */
+        transition: background-color 0.3s ease, transform 0.1s ease,
+          box-shadow 0.3s ease;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Sombra mais suave */
+        flex: 1 1 auto; /* Permite que os botões cresçam e diminuam */
+        max-width: 48%; /* Largura máxima para permitir dois botões por linha em telas maiores */
+        min-width: 140px; /* Largura mínima para evitar esmagamento */
+      }
+
+      .answers button:hover {
+        background-color: #37538c; /* Azul royal mais escuro ao passar o mouse */
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      .answers button:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Animations for visual feedback */
+      .answers button.correct {
+        animation: flashGreen 0.6s ease-in-out forwards; /* Mantido verde para feedback de correção */
+      }
+
+      .answers button.incorrect {
+        animation: flashRed 0.6s ease-in-out forwards; /* Mantido vermelho para feedback de incorreção */
+      }
+
+      @keyframes flashGreen {
+        0% {
+          background-color: #4caf50;
+        } /* Verde original */
+        50% {
+          background-color: #28a745;
+        } /* Verde mais escuro */
+        100% {
+          background-color: #4caf50;
+        }
+      }
+
+      @keyframes flashRed {
+        0% {
+          background-color: #f44336;
+        } /* Vermelho original */
+        50% {
+          background-color: #dc3545;
+        } /* Vermelho mais escuro */
+        100% {
+          background-color: #f44336;
+        }
+      }
+
+      /* Container for difficulty buttons */
+      .difficulty-btns {
+        display: flex;
+        flex-wrap: wrap; /* Permite que os botões quebrem em telas pequenas */
+        justify-content: center;
+        margin-top: 25px;
+        gap: 10px; /* Espaço entre os botões */
+      }
+
+      /* Style for difficulty buttons */
+      .difficulty-btns button {
+        background-color: #78909c; /* Cinza mais suave para o padrão */
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        margin: 5px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: clamp(16px, 3vw, 22px); /* Tamanho de fonte responsivo */
+        transition: background-color 0.3s ease, transform 0.1s ease,
+          box-shadow 0.3s ease;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        flex: 1 1 auto; /* Permite que os botões cresçam e diminuam */
+        max-width: 30%; /* Largura máxima para permitir três botões por linha em telas maiores */
+        min-width: 120px; /* Largura mínima para evitar esmagamento */
+      }
+
+      .difficulty-btns button:hover {
+        opacity: 0.9;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      /* Specific colours for difficulty buttons (adjusted for softness) */
+      .difficulty-btns button[data-difficulty="3"] {
+        background-color: #2ecc71;
+      } /* Fácil - Um verde mais vibrante */
+      .difficulty-btns button[data-difficulty="2"] {
+        background-color: #f39c12;
+        color: white;
+      } /* Médio - Um amarelo/laranja mais distinto */
+      .difficulty-btns button[data-difficulty="1"] {
+        background-color: #e74c3c;
+      } /* Difícil - Um vermelho forte */
+
+      /* Progress information */
+      .score-info {
+        margin-top: 30px;
+        font-size: clamp(16px, 2.8vw, 20px); /* Tamanho de fonte responsivo */
+        display: flex;
+        flex-wrap: wrap; /* Permite que os itens quebrem */
+        justify-content: space-around;
+        padding: 15px 0;
+        border-top: 1px solid #c8d6e5; /* Borda azul clara e sutil */
+        border-bottom: 1px solid #c8d6e5;
+        color: #546e7a;
+      }
+
+      .score-info p {
+        margin: 8px 15px; /* Mais margem para espaçamento */
+        white-space: nowrap; /* Evita que os números quebrem */
+      }
+
+      /* Completion message */
+      #completion-message {
+        margin-top: 30px;
+        font-size: clamp(20px, 4vw, 32px); /* Tamanho de fonte responsivo */
+        color: #1abc9c; /* Um teal fresco e vibrante para a conclusão */
+        font-weight: bold;
+        display: none;
+        line-height: 1.5;
+      }
+
+      /* Responsiveness for smaller screens */
+      @media (max-width: 768px) {
         .content {
-            text-align: center;
-            padding: 30px;
-            max-width: 800px;
-            background-color: #f7e4d0;
-            border-radius: 15px;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-            width: 100%;
+          padding: 20px;
+          width: 95%; /* Ocupa mais largura em telas menores */
         }
 
-        h1 {
-            color: #4a90e2;
+        .answers button,
+        .difficulty-btns button {
+          max-width: 100%; /* Empilha os botões verticalmente em telas pequenas */
+        }
+      }
+
+      @media (max-width: 480px) {
+        .content {
+          padding: 15px;
         }
 
-        .hanzi {
-            font-size: 120px;
-            font-weight: bold;
-            margin: 20px 0;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+        .hanzi-display {
+          font-size: clamp(60px, 20vw, 120px);
         }
 
-        .answers {
-            margin-top: 20px;
+        .hanzi-info {
+          font-size: clamp(16px, 3.5vw, 24px);
         }
 
-        .answers button {
-            background-color: #4caf50;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            margin: 5px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 20px;
+        .answers button,
+        .difficulty-btns button {
+          padding: 10px 18px;
+          font-size: clamp(14px, 3vw, 20px);
+          min-width: unset; /* Remove a largura mínima para permitir mais flexibilidade */
         }
 
-        .answers button:hover {
-            background-color: #45a049;
-        }
-        .answers button.correct {
-            animation: flashGreen 0.5s ease-in-out;
-        }
-        
-        .answers button.incorrect {
-            animation: flashRed 0.5s ease-in-out;
-        }
-        
-        @keyframes flashGreen {
-            0% { background-color: green; }
-            50% { background-color: #4caf50; }
-            100% { background-color: green; }
-        }
-        
-        @keyframes flashRed {
-            0% { background-color: red; }
-            50% { background-color: #f44336; }
-            100% { background-color: red; }
+        .score-info {
+          font-size: clamp(14px, 2.8vw, 18px);
+          flex-direction: column; /* Empilha os itens em telas muito pequenas */
+          align-items: center; /* Centraliza os itens quando empilhados */
         }
 
-        .score {
-            margin-top: 20px;
-            font-size: 20px;
-            display: flex;
-            justify-content: space-between;
+        .score-info p {
+          margin: 5px 0;
         }
-
-        .score p {
-            margin: 0;
-            padding: 0 10px;
-        }
-
-        #completion-message {
-            margin-top: 30px;
-            font-size: 24px;
-            color: green;
-            font-weight: bold;
-            display: none;
-        }
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="content">
-        <h1>成實論 - Chengshilun Hanzi</h1>
-        <p class="hanzi" id="hanzi"></p>
-        <p><strong>Pinyin:</strong> <span id="pinyin"></span></p>
-        <div class="answers" id="answers"></div>
-        <div class="score">
-            <p>Total Mistakes: <span id="total-mistakes">0</span></p>
-            <p>Total Hanzi: <span id="goal">0</span></p>
-            <p>Correct: <span id="score">0</span></p>
-            <p>Attempts Left: <span id="attempts">3</span></p>
-        </div>
-        <div id="completion-message">Congratulations! You have completed all Hanzi!</div>
+      <h1>HanziFlow - Dynamic Memorization</h1>
+      <div class="hanzi-display" id="hanzi-display"></div>
+      <div class="hanzi-info" id="hanzi-details" style="display: none">
+        <p><strong>Pinyin:</strong> <span id="pinyin-display"></span></p>
+        <p><strong>Meaning:</strong> <span id="meaning-display"></span></p>
+      </div>
+
+      <div class="answers" id="answers"></div>
+
+      <div id="difficulty-btns" class="difficulty-btns" style="display: none">
+        <button data-difficulty="3">Easy</button>
+        <button data-difficulty="2">Medium</button>
+        <button data-difficulty="1">Difficult</button>
+      </div>
+
+      <div class="score-info">
+        <p>Hanzis Seen: <span id="hanzi-seen">0</span></p>
+        <p>Hanzis to Review: <span id="hanzi-to-review">0</span></p>
+        <p>Total Hanzis: <span id="total-hanzi-count">0</span></p>
+      </div>
+      <div id="completion-message">
+        Congratulations! You've reviewed all Hanzis for now!
+      </div>
     </div>
 
     <script>
-        /**
-         * Hanzi data containing the characters, their pinyin, meanings, and mistake counts
-         */
-        const data = [
+      // Hanzi data. Each object now includes 'difficulty' and 'lastReviewed'.
+      // 'difficulty':
+      //    0: New (never seen or rated)
+      //    1: Difficult (requires more frequent review)
+      //    2: Medium (requires review at a moderate interval)
+      //    3: Easy (requires review at a long interval)
+      // 'lastReviewed': Timestamp (milliseconds) of the last time the hanzi was reviewed and rated.
+      let hanziData = [
         {
-          "Hanzis": "不",
-          "Piyins": "Bù",
-          "Meanings": "not, don't, negative prefix",
-          "mistakes": 0
+          hanzi: "不",
+          pinyin: "Bù",
+          meaning: "not, don't, negative prefix",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "是",
-          "Piyins": "Shì",
-          "Meanings": "to be, yes, this, correct",
-          "mistakes": 0
+          hanzi: "是",
+          pinyin: "Shì",
+          meaning: "to be, yes, this, correct",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "故",
-          "Piyins": "Gù",
-          "Meanings": "reason, cause, then",
-          "mistakes": 0
+          hanzi: "故",
+          pinyin: "Gù",
+          meaning: "reason, cause, then",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "無",
-          "Piyins": "Wú",
-          "Meanings": "not have, without, void",
-          "mistakes": 0
+          hanzi: "無",
+          pinyin: "Wú",
+          meaning: "not have, without, void",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "有",
-          "Piyins": "Yǒu",
-          "Meanings": "have, possess, exist, bhava",
-          "mistakes": 0
+          hanzi: "有",
+          pinyin: "Yǒu",
+          meaning: "have, possess, exist, bhava",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "生",
-          "Piyins": "Shēng",
-          "Meanings": "life, birth, rebirth, samsara",
-          "mistakes": 0
+          hanzi: "生",
+          pinyin: "Shēng",
+          meaning: "life, birth, rebirth, samsara",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "又",
-          "Piyins": "Yòu",
-          "Meanings": "again, also, furthermore",
-          "mistakes": 0
+          hanzi: "又",
+          pinyin: "Yòu",
+          meaning: "again, also, furthermore",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "如",
-          "Piyins": "Rú",
-          "Meanings": "like, as, according to",
-          "mistakes": 0
+          hanzi: "如",
+          pinyin: "Rú",
+          meaning: "like, as, according to",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "說",
-          "Piyins": "Shuō",
-          "Meanings": "speak, explain, dharma teaching",
-          "mistakes": 0
+          hanzi: "說",
+          pinyin: "Shuō",
+          meaning: "speak, explain, dharma teaching",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "中",
-          "Piyins": "Zhōng",
-          "Meanings": "in the midst of, within, in between, while",
-          "mistakes": 0
+          hanzi: "中",
+          pinyin: "Zhōng",
+          meaning: "in the midst of, within, in between, while",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "者",
-          "Piyins": "Zhě",
-          "Meanings": "one who, practitioner, subject of action",
-          "mistakes": 0
+          hanzi: "者",
+          pinyin: "Zhě",
+          meaning: "one who, practitioner, subject of action",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "名",
-          "Piyins": "Míng",
-          "Meanings": "name, conceptual designation, nominal existence",
-          "mistakes": 0
+          hanzi: "名",
+          pinyin: "Míng",
+          meaning: "name, conceptual designation, nominal existence",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "以",
-          "Piyins": "Yǐ",
-          "Meanings": "by means of, because, in order to",
-          "mistakes": 0
+          hanzi: "以",
+          pinyin: "Yǐ",
+          meaning: "by means of, because, in order to",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "若",
-          "Piyins": "Ruò",
-          "Meanings": "if, like, as",
-          "mistakes": 0
+          hanzi: "若",
+          pinyin: "Ruò",
+          meaning: "if, like, as",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "心",
-          "Piyins": "Xīn",
-          "Meanings": "heart, mind, intention, citta",
-          "mistakes": 0
+          hanzi: "心",
+          pinyin: "Xīn",
+          meaning: "heart, mind, intention, citta",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "為",
-          "Piyins": "Wèi",
-          "Meanings": "because of, for, to, do",
-          "mistakes": 0
+          hanzi: "為",
+          pinyin: "Wèi",
+          meaning: "because of, for, to, do",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "等",
-          "Piyins": "Děng",
-          "Meanings": "etc, and so forth",
-          "mistakes": 0
+          hanzi: "等",
+          pinyin: "Děng",
+          meaning: "etc, and so forth",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "法",
-          "Piyins": "Fǎ",
-          "Meanings": "law, way, dharmas",
-          "mistakes": 0
+          hanzi: "法",
+          pinyin: "Fǎ",
+          meaning: "law, way, dharmas",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "曰",
-          "Piyins": "Yuē",
-          "Meanings": "say, speak, called",
-          "mistakes": 0
+          hanzi: "曰",
+          pinyin: "Yuē",
+          meaning: "say, speak, called",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "人",
-          "Piyins": "Rén",
-          "Meanings": "person, people, sentient being",
-          "mistakes": 0
+          hanzi: "人",
+          pinyin: "Rén",
+          meaning: "person, people, sentient being",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "得",
-          "Piyins": "Dé",
-          "Meanings": "obtain, get, realization",
-          "mistakes": 0
+          hanzi: "得",
+          pinyin: "Dé",
+          meaning: "obtain, get, realization",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "知",
-          "Piyins": "Zhī",
-          "Meanings": "know, discernment, prajna",
-          "mistakes": 0
+          hanzi: "知",
+          pinyin: "Zhī",
+          meaning: "know, discernment, prajna",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "亦",
-          "Piyins": "Yì",
-          "Meanings": "too, as well, likewise",
-          "mistakes": 0
+          hanzi: "亦",
+          pinyin: "Yì",
+          meaning: "too, as well, likewise",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "能",
-          "Piyins": "Néng",
-          "Meanings": "can, capability, ability",
-          "mistakes": 0
+          hanzi: "能",
+          pinyin: "Néng",
+          meaning: "can, capability, ability",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "何",
-          "Piyins": "Hé",
-          "Meanings": "what, why, how",
-          "mistakes": 0
+          hanzi: "何",
+          pinyin: "Hé",
+          meaning: "what, why, how",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "所",
-          "Piyins": "Suǒ",
-          "Meanings": "place, location, that which",
-          "mistakes": 0
+          hanzi: "所",
+          pinyin: "Suǒ",
+          meaning: "place, location, that which",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "則",
-          "Piyins": "Zé",
-          "Meanings": "then, therefore, rule",
-          "mistakes": 0
+          hanzi: "則",
+          pinyin: "Zé",
+          meaning: "then, therefore, rule",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "見",
-          "Piyins": "Jiàn",
-          "Meanings": "see, view, drishti",
-          "mistakes": 0
+          hanzi: "見",
+          pinyin: "Jiàn",
+          meaning: "see, view, drishti",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "此",
-          "Piyins": "Cǐ",
-          "Meanings": "this, then, here",
-          "mistakes": 0
+          hanzi: "此",
+          pinyin: "Cǐ",
+          meaning: "this, then, here",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "一",
-          "Piyins": "Yī",
-          "Meanings": "one, single",
-          "mistakes": 0
+          hanzi: "一",
+          pinyin: "Yī",
+          meaning: "one, single",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "相",
-          "Piyins": "Xiàng",
-          "Meanings": "mutual, characteristics, lakshana",
-          "mistakes": 0
+          hanzi: "相",
+          pinyin: "Xiàng",
+          meaning: "mutual, characteristics, lakshana",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "諸",
-          "Piyins": "Zhū",
-          "Meanings": "all, various, many",
-          "mistakes": 0
+          hanzi: "諸",
+          pinyin: "Zhū",
+          meaning: "all, various, many",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "色",
-          "Piyins": "Sè",
-          "Meanings": "rūpa, color, form",
-          "mistakes": 0
+          hanzi: "色",
+          pinyin: "Sè",
+          meaning: "rūpa, color, form",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "因",
-          "Piyins": "Yīn",
-          "Meanings": "cause, reason, hetu",
-          "mistakes": 0
+          hanzi: "因",
+          pinyin: "Yīn",
+          meaning: "cause, reason, hetu",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "業",
-          "Piyins": "Yè",
-          "Meanings": "business, work, karma",
-          "mistakes": 0
+          hanzi: "業",
+          pinyin: "Yè",
+          meaning: "business, work, karma",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "行",
-          "Piyins": "Xíng",
-          "Meanings": "saṃskāra, saṅkhāra, mental formations, practice, ir",
-          "mistakes": 0
+          hanzi: "行",
+          pinyin: "Xíng",
+          meaning: "saṃskāra, saṅkhāra, mental formations, practice, ir",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "應",
-          "Piyins": "Yìng",
-          "Meanings": "respond, deal with",
-          "mistakes": 0
+          hanzi: "應",
+          pinyin: "Yìng",
+          meaning: "respond, deal with",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "緣",
-          "Piyins": "Yuán",
-          "Meanings": "cause, reason, dependence",
-          "mistakes": 0
+          hanzi: "緣",
+          pinyin: "Yuán",
+          meaning: "cause, reason, dependence",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "答",
-          "Piyins": "Dá",
-          "Meanings": "reply, agree",
-          "mistakes": 0
+          hanzi: "答",
+          pinyin: "Dá",
+          meaning: "reply, agree",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "言",
-          "Piyins": "Yán",
-          "Meanings": "words, say, speak",
-          "mistakes": 0
+          hanzi: "言",
+          pinyin: "Yán",
+          meaning: "words, say, speak",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "問",
-          "Piyins": "Wèn",
-          "Meanings": "ask, investigate",
-          "mistakes": 0
+          hanzi: "問",
+          pinyin: "Wèn",
+          meaning: "ask, investigate",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "滅",
-          "Piyins": "Miè",
-          "Meanings": "extinguish, cease",
-          "mistakes": 0
+          hanzi: "滅",
+          pinyin: "Miè",
+          meaning: "extinguish, cease",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "受",
-          "Piyins": "Shòu",
-          "Meanings": "vedanā, sensation, receive",
-          "mistakes": 0
+          hanzi: "受",
+          pinyin: "Shòu",
+          meaning: "vedanā, sensation, receive",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "苦",
-          "Piyins": "Gǔ",
-          "Meanings": "bitter, suffering",
-          "mistakes": 0
+          hanzi: "苦",
+          pinyin: "Gǔ",
+          meaning: "bitter, suffering",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "善",
-          "Piyins": "Shàn",
-          "Meanings": "good, positive, benevolent",
-          "mistakes": 0
+          hanzi: "善",
+          pinyin: "Shàn",
+          meaning: "good, positive, benevolent",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "我",
-          "Piyins": "Wǒ",
-          "Meanings": "atman, self",
-          "mistakes": 0
+          hanzi: "我",
+          pinyin: "Wǒ",
+          meaning: "atman, self",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "非",
-          "Piyins": "Fēi",
-          "Meanings": "not, negative, incorrect",
-          "mistakes": 0
+          hanzi: "非",
+          pinyin: "Fēi",
+          meaning: "not, negative, incorrect",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "智",
-          "Piyins": "Zhì",
-          "Meanings": "discernment, wisdom",
-          "mistakes": 0
+          hanzi: "智",
+          pinyin: "Zhì",
+          meaning: "discernment, wisdom",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "經",
-          "Piyins": "Jīng",
-          "Meanings": "sutras, scriptures",
-          "mistakes": 0
+          hanzi: "經",
+          pinyin: "Jīng",
+          meaning: "sutras, scriptures",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "身",
-          "Piyins": "Shēn",
-          "Meanings": "body, life, kāya",
-          "mistakes": 0
+          hanzi: "身",
+          pinyin: "Shēn",
+          meaning: "body, life, kāya",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "樂",
-          "Piyins": "Lè",
-          "Meanings": "music, delight",
-          "mistakes": 0
+          hanzi: "樂",
+          pinyin: "Lè",
+          meaning: "music, delight",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "於",
-          "Piyins": "Yú",
-          "Meanings": "in, to, by",
-          "mistakes": 0
+          hanzi: "於",
+          pinyin: "Yú",
+          meaning: "in, to, by",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "佛",
-          "Piyins": "Fó",
-          "Meanings": "buddha, buddhism",
-          "mistakes": 0
+          hanzi: "佛",
+          pinyin: "Fó",
+          meaning: "buddha, buddhism",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "定",
-          "Piyins": "Dìng",
-          "Meanings": "concentrate, samadhi, establish",
-          "mistakes": 0
+          hanzi: "定",
+          pinyin: "Dìng",
+          meaning: "concentrate, samadhi, establish",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "欲",
-          "Piyins": "Yù",
-          "Meanings": "passion, desire, aspiration",
-          "mistakes": 0
+          hanzi: "欲",
+          pinyin: "Yù",
+          meaning: "passion, desire, aspiration",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "識",
-          "Piyins": "Shí",
-          "Meanings": "vijñāna, viññāṇa, consciousness, cognition",
-          "mistakes": 0
+          hanzi: "識",
+          pinyin: "Shí",
+          meaning: "vijñāna, viññāṇa, consciousness, cognition",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "三",
-          "Piyins": "Sān",
-          "Meanings": "3",
-          "mistakes": 0
+          hanzi: "三",
+          pinyin: "Sān",
+          meaning: "3",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "皆",
-          "Piyins": "Jiē",
-          "Meanings": "all, in all cases",
-          "mistakes": 0
+          hanzi: "皆",
+          pinyin: "Jiē",
+          meaning: "all, in all cases",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "念",
-          "Piyins": "Niàn",
-          "Meanings": "think about, remember",
-          "mistakes": 0
+          hanzi: "念",
+          pinyin: "Niàn",
+          meaning: "think about, remember",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "事",
-          "Piyins": "Shì",
-          "Meanings": "event, happening, matter",
-          "mistakes": 0
+          hanzi: "事",
+          pinyin: "Shì",
+          meaning: "event, happening, matter",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "斷",
-          "Piyins": "Duàn",
-          "Meanings": "cut, interrupt, discontinuous",
-          "mistakes": 0
+          hanzi: "斷",
+          pinyin: "Duàn",
+          meaning: "cut, interrupt, discontinuous",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "惱",
-          "Piyins": "Nǎo",
-          "Meanings": "be affected by negative mental things",
-          "mistakes": 0
+          hanzi: "惱",
+          pinyin: "Nǎo",
+          meaning: "be affected by negative mental things",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "種",
-          "Piyins": "Zhǒng",
-          "Meanings": "species, types, seed",
-          "mistakes": 0
+          hanzi: "種",
+          pinyin: "Zhǒng",
+          meaning: "species, types, seed",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "道",
-          "Piyins": "Dào",
-          "Meanings": "path, route, reason",
-          "mistakes": 0
+          hanzi: "道",
+          pinyin: "Dào",
+          meaning: "path, route, reason",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "而",
-          "Piyins": "Ér",
-          "Meanings": "as much as, and, and so",
-          "mistakes": 0
+          hanzi: "而",
+          pinyin: "Ér",
+          meaning: "as much as, and, and so",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "二",
-          "Piyins": "Èr",
-          "Meanings": "two, 2",
-          "mistakes": 0
+          hanzi: "二",
+          pinyin: "Èr",
+          meaning: "two, 2",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "四",
-          "Piyins": "Sì",
-          "Meanings": "4, four",
-          "mistakes": 0
+          hanzi: "四",
+          pinyin: "Sì",
+          meaning: "4, four",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "眾",
-          "Piyins": "Zhòng",
-          "Meanings": "many, various, multitude",
-          "mistakes": 0
+          hanzi: "眾",
+          pinyin: "Zhòng",
+          meaning: "many, various, multitude",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "第",
-          "Piyins": "Dì",
-          "Meanings": "prefix indicating ordinal number as sixth and so on, but",
-          "mistakes": 0
+          hanzi: "第",
+          pinyin: "Dì",
+          meaning: "prefix indicating ordinal number as sixth and so on, but",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "貪",
-          "Piyins": "Tān",
-          "Meanings": "greed, craving",
-          "mistakes": 0
+          hanzi: "貪",
+          pinyin: "Tān",
+          meaning: "greed, craving",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "世",
-          "Piyins": "Shì",
-          "Meanings": "generation, world, era",
-          "mistakes": 0
+          hanzi: "世",
+          pinyin: "Shì",
+          meaning: "generation, world, era",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "一切",
-          "Piyins": "Yīqiē",
-          "Meanings": "all, each",
-          "mistakes": 0
+          hanzi: "一切",
+          pinyin: "Yīqiē",
+          meaning: "all, each",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "切",
-          "Piyins": "Qiē",
-          "Meanings": "cut, slice",
-          "mistakes": 0
+          hanzi: "切",
+          pinyin: "Qiē",
+          meaning: "cut, slice",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "時",
-          "Piyins": "Shí",
-          "Meanings": "time, period, when",
-          "mistakes": 0
+          hanzi: "時",
+          pinyin: "Shí",
+          meaning: "time, period, when",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "但",
-          "Piyins": "Dàn",
-          "Meanings": "however, but",
-          "mistakes": 0
+          hanzi: "但",
+          pinyin: "Dàn",
+          meaning: "however, but",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "常",
-          "Piyins": "Cháng",
-          "Meanings": "always, constant, frequent",
-          "mistakes": 0
+          hanzi: "常",
+          pinyin: "Cháng",
+          meaning: "always, constant, frequent",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "五",
-          "Piyins": "Wǔ",
-          "Meanings": "5, five",
-          "mistakes": 0
+          hanzi: "五",
+          pinyin: "Wǔ",
+          meaning: "5, five",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "可",
-          "Piyins": "Kè",
-          "Meanings": "can, ability",
-          "mistakes": 0
+          hanzi: "可",
+          pinyin: "Kè",
+          meaning: "can, ability",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "謂",
-          "Piyins": "Wèi",
-          "Meanings": "say, so to speak, name",
-          "mistakes": 0
+          hanzi: "謂",
+          pinyin: "Wèi",
+          meaning: "say, so to speak, name",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "實",
-          "Piyins": "Shí",
-          "Meanings": "efficiency, effectiveness, actual",
-          "mistakes": 0
+          hanzi: "實",
+          pinyin: "Shí",
+          meaning: "efficiency, effectiveness, actual",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "想",
-          "Piyins": "Xiang",
-          "Meanings": "saṃjñā, sañña, reflection on, concept",
-          "mistakes": 0
+          hanzi: "想",
+          pinyin: "Xiang",
+          meaning: "saṃjñā, sañña, reflection on, concept",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "根",
-          "Piyins": "Gēn",
-          "Meanings": "root, base",
-          "mistakes": 0
+          hanzi: "根",
+          pinyin: "Gēn",
+          meaning: "root, base",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "從",
-          "Piyins": "Cóng",
-          "Meanings": "by, hence, of",
-          "mistakes": 0
+          hanzi: "從",
+          pinyin: "Cóng",
+          meaning: "by, hence, of",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "汝",
-          "Piyins": "Rǔ",
-          "Meanings": "you",
-          "mistakes": 0
+          hanzi: "汝",
+          pinyin: "Rǔ",
+          meaning: "you",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "離",
-          "Piyins": "Lí",
-          "Meanings": "leave, separate from, be far from",
-          "mistakes": 0
+          hanzi: "離",
+          pinyin: "Lí",
+          meaning: "leave, separate from, be far from",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "處",
-          "Piyins": "Chǔ",
-          "Meanings": "locus, reside, live",
-          "mistakes": 0
+          hanzi: "處",
+          pinyin: "Chǔ",
+          meaning: "locus, reside, live",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "自",
-          "Piyins": "Zì",
-          "Meanings": "own, private, since",
-          "mistakes": 0
+          hanzi: "自",
+          pinyin: "Zì",
+          meaning: "own, private, since",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "別",
-          "Piyins": "Bié",
-          "Meanings": "separate (from), to differentiate",
-          "mistakes": 0
+          hanzi: "別",
+          pinyin: "Bié",
+          meaning: "separate (from), to differentiate",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "淨",
-          "Piyins": "jìng",
-          "Meanings": "pure, clean, immaculate",
-          "mistakes": 0
+          hanzi: "淨",
+          pinyin: "jìng",
+          meaning: "pure, clean, immaculate",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "分",
-          "Piyins": "fēn",
-          "Meanings": "to distinguish, sort out",
-          "mistakes": 0
+          hanzi: "分",
+          pinyin: "fēn",
+          meaning: "to distinguish, sort out",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "在",
-          "Piyins": "zài",
-          "Meanings": "be in, about, consist of",
-          "mistakes": 0
+          hanzi: "在",
+          pinyin: "zài",
+          meaning: "be in, about, consist of",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "品",
-          "Piyins": "pǐn",
-          "Meanings": "chapter, section",
-          "mistakes": 0
+          hanzi: "品",
+          pinyin: "pǐn",
+          meaning: "chapter, section",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "隨",
-          "Piyins": "Suí",
-          "Meanings": "follow, in accordance with, subsequently",
-          "mistakes": 0
+          hanzi: "隨",
+          pinyin: "Suí",
+          meaning: "follow, in accordance with, subsequently",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "然",
-          "Piyins": "rán",
-          "Meanings": "naturally, later, like this",
-          "mistakes": 0
+          hanzi: "然",
+          pinyin: "rán",
+          meaning: "naturally, later, like this",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "煩",
-          "Piyins": "Fán",
-          "Meanings": "bother, annoy, trouble",
-          "mistakes": 0
+          hanzi: "煩",
+          pinyin: "Fán",
+          meaning: "bother, annoy, trouble",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "作",
-          "Piyins": "zuò",
-          "Meanings": "make, work, compose",
-          "mistakes": 0
+          hanzi: "作",
+          pinyin: "zuò",
+          meaning: "make, work, compose",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "大",
-          "Piyins": "dài",
-          "Meanings": "big, vast",
-          "mistakes": 0
+          hanzi: "大",
+          pinyin: "dài",
+          meaning: "big, vast",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "異",
-          "Piyins": "Yì",
-          "Meanings": "different, unusual, strange",
-          "mistakes": 0
+          hanzi: "異",
+          pinyin: "Yì",
+          meaning: "different, unusual, strange",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "眼",
-          "Piyins": "yǎn",
-          "Meanings": "a glance, hole, opening",
-          "mistakes": 0
+          hanzi: "眼",
+          pinyin: "yǎn",
+          meaning: "a glance, hole, opening",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "修",
-          "Piyins": "xiū",
-          "Meanings": "study, cultivate",
-          "mistakes": 0
+          hanzi: "修",
+          pinyin: "xiū",
+          meaning: "study, cultivate",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "陰",
-          "Piyins": "yīn",
-          "Meanings": "skandhas, aggregates, principle",
-          "mistakes": 0
+          hanzi: "陰",
+          pinyin: "yīn",
+          meaning: "skandhas, aggregates, principle",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "盡",
-          "Piyins": "jǐn",
-          "Meanings": "extinguish, exhaust",
-          "mistakes": 0
+          hanzi: "盡",
+          pinyin: "jǐn",
+          meaning: "extinguish, exhaust",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "報",
-          "Piyins": "bào",
-          "Meanings": "[karmic] fruit, retribution",
-          "mistakes": 0
+          hanzi: "報",
+          pinyin: "bào",
+          meaning: "[karmic] fruit, retribution",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "明",
-          "Piyins": "míng",
-          "Meanings": "discernment, bright",
-          "mistakes": 0
+          hanzi: "明",
+          pinyin: "míng",
+          meaning: "discernment, bright",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "即",
-          "Piyins": "jí",
-          "Meanings": "that is, namely, thus",
-          "mistakes": 0
+          hanzi: "即",
+          pinyin: "jí",
+          meaning: "that is, namely, thus",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "入",
-          "Piyins": "rù",
-          "Meanings": "enter, (sensory) inputs",
-          "mistakes": 0
+          hanzi: "入",
+          pinyin: "rù",
+          meaning: "enter, (sensory) inputs",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "慧",
-          "Piyins": "huì",
-          "Meanings": "discernment (prajna)",
-          "mistakes": 0
+          hanzi: "慧",
+          pinyin: "huì",
+          meaning: "discernment (prajna)",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "地",
-          "Piyins": "dì",
-          "Meanings": "earth (four elements, etc)",
-          "mistakes": 0
+          hanzi: "地",
+          pinyin: "dì",
+          meaning: "earth (four elements, etc)",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "空",
-          "Piyins": "kōng",
-          "Meanings": "empty (of atman, etc)",
-          "mistakes": 0
+          hanzi: "空",
+          pinyin: "kōng",
+          meaning: "empty (of atman, etc)",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "惡",
-          "Piyins": "è",
-          "Meanings": "unhealthy, akuśala, something negative",
-          "mistakes": 0
+          hanzi: "惡",
+          pinyin: "è",
+          meaning: "unhealthy, akuśala, something negative",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "過",
-          "Piyins": "guo",
-          "Meanings": "misunderstanding, past",
-          "mistakes": 0
+          hanzi: "過",
+          pinyin: "guo",
+          meaning: "misunderstanding, past",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "解",
-          "Piyins": "jiě",
-          "Meanings": "understanding",
-          "mistakes": 0
+          hanzi: "解",
+          pinyin: "jiě",
+          meaning: "understanding",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "當",
-          "Piyins": "dāng",
-          "Meanings": "should be, fit, proper",
-          "mistakes": 0
+          hanzi: "當",
+          pinyin: "dāng",
+          meaning: "should be, fit, proper",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "十",
-          "Piyins": "shí",
-          "Meanings": "10",
-          "mistakes": 0
+          hanzi: "十",
+          pinyin: "shí",
+          meaning: "10",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "罪",
-          "Piyins": "zuì",
-          "Meanings": "wrongful act",
-          "mistakes": 0
+          hanzi: "罪",
+          pinyin: "zuì",
+          meaning: "wrongful act",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "或",
-          "Piyins": "huò",
-          "Meanings": "either this... or that, perhaps",
-          "mistakes": 0
+          hanzi: "或",
+          pinyin: "huò",
+          meaning: "either this... or that, perhaps",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "禪",
-          "Piyins": "chán",
-          "Meanings": "dhyana, absorption",
-          "mistakes": 0
+          hanzi: "禪",
+          pinyin: "chán",
+          meaning: "dhyana, absorption",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "成",
-          "Piyins": "chéng",
-          "Meanings": "realization, becoming",
-          "mistakes": 0
+          hanzi: "成",
+          pinyin: "chéng",
+          meaning: "realization, becoming",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "多",
-          "Piyins": "duō",
-          "Meanings": "many",
-          "mistakes": 0
+          hanzi: "多",
+          pinyin: "duō",
+          meaning: "many",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "利",
-          "Piyins": "lì",
-          "Meanings": "benefit, advantage",
-          "mistakes": 0
+          hanzi: "利",
+          pinyin: "lì",
+          meaning: "benefit, advantage",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "喜",
-          "Piyins": "xǐ",
-          "Meanings": "joy, pleasure, well-being",
-          "mistakes": 0
+          hanzi: "喜",
+          pinyin: "xǐ",
+          meaning: "joy, pleasure, well-being",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "意",
-          "Piyins": "yì",
-          "Meanings": "mental attitude, intention",
-          "mistakes": 0
+          hanzi: "意",
+          pinyin: "yì",
+          meaning: "mental attitude, intention",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "後",
-          "Piyins": "hòu",
-          "Meanings": "after, later, behind",
-          "mistakes": 0
+          hanzi: "後",
+          pinyin: "hòu",
+          meaning: "after, later, behind",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "餘",
-          "Piyins": "yú",
-          "Meanings": "the others, the remaining",
-          "mistakes": 0
+          hanzi: "餘",
+          pinyin: "yú",
+          meaning: "the others, the remaining",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "云",
-          "Piyins": "yún",
-          "Meanings": "say, speak",
-          "mistakes": 0
+          hanzi: "云",
+          pinyin: "yún",
+          meaning: "say, speak",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "觀",
-          "Piyins": "guān",
-          "Meanings": "vipashyana, discernment, observe, look",
-          "mistakes": 0
+          hanzi: "觀",
+          pinyin: "guān",
+          meaning: "vipashyana, discernment, observe, look",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "爾",
-          "Piyins": "ěr",
-          "Meanings": "thus, then, those",
-          "mistakes": 0
+          hanzi: "爾",
+          pinyin: "ěr",
+          meaning: "thus, then, those",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "耶",
-          "Piyins": "yē",
-          "Meanings": "sentence ending, or interrogation, or transliteration",
-          "mistakes": 0
+          hanzi: "耶",
+          pinyin: "yē",
+          meaning: "sentence ending, or interrogation, or transliteration",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "正",
-          "Piyins": "zhèng",
-          "Meanings": "correct, rectify",
-          "mistakes": 0
+          hanzi: "正",
+          pinyin: "zhèng",
+          meaning: "correct, rectify",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "也",
-          "Piyins": "yě",
-          "Meanings": "sentence completion particle",
-          "mistakes": 0
+          hanzi: "也",
+          pinyin: "yě",
+          meaning: "sentence completion particle",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "漏",
-          "Piyins": "lòu",
-          "Meanings": "contaminated, āsrava",
-          "mistakes": 0
+          hanzi: "漏",
+          pinyin: "lòu",
+          meaning: "contaminated, āsrava",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "死",
-          "Piyins": "sǐ",
-          "Meanings": "death, die",
-          "mistakes": 0
+          hanzi: "死",
+          pinyin: "sǐ",
+          meaning: "death, die",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "脫",
-          "Piyins": "tuō",
-          "Meanings": "release, liberation through understanding",
-          "mistakes": 0
+          hanzi: "脫",
+          pinyin: "tuō",
+          meaning: "release, liberation through understanding",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "羅",
-          "Piyins": "luó",
-          "Meanings": "phonetic, e.g., arahat",
-          "mistakes": 0
+          hanzi: "羅",
+          pinyin: "luó",
+          meaning: "phonetic, e.g., arahat",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "取",
-          "Piyins": "qǔ",
-          "Meanings": "attachment, cling, grasp",
-          "mistakes": 0
+          hanzi: "取",
+          pinyin: "qǔ",
+          meaning: "attachment, cling, grasp",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "現",
-          "Piyins": "xiàn",
-          "Meanings": "present, now, appear",
-          "mistakes": 0
+          hanzi: "現",
+          pinyin: "xiàn",
+          meaning: "present, now, appear",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "起",
-          "Piyins": "qǐ",
-          "Meanings": "arise, elicit, cause",
-          "mistakes": 0
+          hanzi: "起",
+          pinyin: "qǐ",
+          meaning: "arise, elicit, cause",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "依",
-          "Piyins": "yī",
-          "Meanings": "rely on",
-          "mistakes": 0
+          hanzi: "依",
+          pinyin: "yī",
+          meaning: "rely on",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "諦",
-          "Piyins": "dì",
-          "Meanings": "truth (two truths)",
-          "mistakes": 0
+          hanzi: "諦",
+          pinyin: "dì",
+          meaning: "truth (two truths)",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "雖",
-          "Piyins": "suī",
-          "Meanings": "even if, although",
-          "mistakes": 0
+          hanzi: "雖",
+          pinyin: "suī",
+          meaning: "even if, although",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "界",
-          "Piyins": "jiè",
-          "Meanings": "world, loka, spheres",
-          "mistakes": 0
+          hanzi: "界",
+          pinyin: "jiè",
+          meaning: "world, loka, spheres",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "覺",
-          "Piyins": "jué",
-          "Meanings": "awaken, wake up",
-          "mistakes": 0
+          hanzi: "覺",
+          pinyin: "jué",
+          meaning: "awaken, wake up",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "觸",
-          "Piyins": "chù",
-          "Meanings": "contact, sparśa, phassa",
-          "mistakes": 0
+          hanzi: "觸",
+          pinyin: "chù",
+          meaning: "contact, sparśa, phassa",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "戒",
-          "Piyins": "jiè",
-          "Meanings": "precepts, vinaya, monastic discipline",
-          "mistakes": 0
+          hanzi: "戒",
+          pinyin: "jiè",
+          meaning: "precepts, vinaya, monastic discipline",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "福",
-          "Piyins": "fú",
-          "Meanings": "happiness, (worldly) benefit",
-          "mistakes": 0
+          hanzi: "福",
+          pinyin: "fú",
+          meaning: "happiness, (worldly) benefit",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "來",
-          "Piyins": "lái",
-          "Meanings": "come, came",
-          "mistakes": 0
+          hanzi: "來",
+          pinyin: "lái",
+          meaning: "come, came",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "語",
-          "Piyins": "yǔ",
-          "Meanings": "language, buddha's discourse",
-          "mistakes": 0
+          hanzi: "語",
+          pinyin: "yǔ",
+          meaning: "language, buddha's discourse",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "果",
-          "Piyins": "guǒ",
-          "Meanings": "fruit (both worldly and non-worldly), result",
-          "mistakes": 0
+          hanzi: "果",
+          pinyin: "guǒ",
+          meaning: "fruit (both worldly and non-worldly), result",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "先",
-          "Piyins": "xiān",
-          "Meanings": "first, ancient, previous",
-          "mistakes": 0
+          hanzi: "先",
+          pinyin: "xiān",
+          meaning: "first, ancient, previous",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "聞",
-          "Piyins": "wén",
-          "Meanings": "hear",
-          "mistakes": 0
+          hanzi: "聞",
+          pinyin: "wén",
+          meaning: "hear",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "義",
-          "Piyins": "yì",
-          "Meanings": "justice, meaning",
-          "mistakes": 0
+          hanzi: "義",
+          pinyin: "yì",
+          meaning: "justice, meaning",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "論",
-          "Piyins": "lùn",
-          "Meanings": "debate, treatise, theory",
-          "mistakes": 0
+          hanzi: "論",
+          pinyin: "lùn",
+          meaning: "debate, treatise, theory",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "聲",
-          "Piyins": "shēng",
-          "Meanings": "sound, voice, hear",
-          "mistakes": 0
+          hanzi: "聲",
+          pinyin: "shēng",
+          meaning: "sound, voice, hear",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "與",
-          "Piyins": "yǔ",
-          "Meanings": "and, with",
-          "mistakes": 0
+          hanzi: "與",
+          pinyin: "yǔ",
+          meaning: "and, with",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "未",
-          "Piyins": "wèi",
-          "Meanings": "yet, not yet",
-          "mistakes": 0
+          hanzi: "未",
+          pinyin: "wèi",
+          meaning: "yet, not yet",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "及",
-          "Piyins": "jí",
-          "Meanings": "and this, and that",
-          "mistakes": 0
+          hanzi: "及",
+          pinyin: "jí",
+          meaning: "and this, and that",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "邪",
-          "Piyins": "xié",
-          "Meanings": "false, heterodox, perverse",
-          "mistakes": 0
+          hanzi: "邪",
+          pinyin: "xié",
+          meaning: "false, heterodox, perverse",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "他",
-          "Piyins": "tā",
-          "Meanings": "other thing, other person, he",
-          "mistakes": 0
+          hanzi: "他",
+          pinyin: "tā",
+          meaning: "other thing, other person, he",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "已",
-          "Piyins": "yǐ",
-          "Meanings": "already occurred, already",
-          "mistakes": 0
+          hanzi: "已",
+          pinyin: "yǐ",
+          meaning: "already occurred, already",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "間",
-          "Piyins": "jiān",
-          "Meanings": "temporal interval, spatial interval",
-          "mistakes": 0
+          hanzi: "間",
+          pinyin: "jiān",
+          meaning: "temporal interval, spatial interval",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "力",
-          "Piyins": "lì",
-          "Meanings": "force, power",
-          "mistakes": 0
+          hanzi: "力",
+          pinyin: "lì",
+          meaning: "force, power",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "次",
-          "Piyins": "cì",
-          "Meanings": "sequence, next",
-          "mistakes": 0
+          hanzi: "次",
+          pinyin: "cì",
+          meaning: "sequence, next",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "阿",
-          "Piyins": "ā",
-          "Meanings": "phonetic 'a'",
-          "mistakes": 0
+          hanzi: "阿",
+          pinyin: "ā",
+          meaning: "phonetic 'a'",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "思",
-          "Piyins": "sī",
-          "Meanings": "think, consider, thought",
-          "mistakes": 0
+          hanzi: "思",
+          pinyin: "sī",
+          meaning: "think, consider, thought",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "愛",
-          "Piyins": "ài",
-          "Meanings": "desire with attachment, desire",
-          "mistakes": 0
+          hanzi: "愛",
+          pinyin: "ài",
+          meaning: "desire with attachment, desire",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "捨",
-          "Piyins": "shě",
-          "Meanings": "abandon, detachment",
-          "mistakes": 0
+          hanzi: "捨",
+          pinyin: "shě",
+          meaning: "abandon, detachment",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "去",
-          "Piyins": "qù",
-          "Meanings": "already passed, past",
-          "mistakes": 0
+          hanzi: "去",
+          pinyin: "qù",
+          meaning: "already passed, past",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "壞",
-          "Piyins": "huài",
-          "Meanings": "undo, break",
-          "mistakes": 0
+          hanzi: "壞",
+          pinyin: "huài",
+          meaning: "undo, break",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "假",
-          "Piyins": "jiǎ",
-          "Meanings": "nominal, fictitious",
-          "mistakes": 0
+          hanzi: "假",
+          pinyin: "jiǎ",
+          meaning: "nominal, fictitious",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "殺",
-          "Piyins": "shā",
-          "Meanings": "kill",
-          "mistakes": 0
+          hanzi: "殺",
+          pinyin: "shā",
+          meaning: "kill",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "物",
-          "Piyins": "wù",
-          "Meanings": "things in general",
-          "mistakes": 0
+          hanzi: "物",
+          pinyin: "wù",
+          meaning: "things in general",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "性",
-          "Piyins": "xìng",
-          "Meanings": "svabhava, own nature",
-          "mistakes": 0
+          hanzi: "性",
+          pinyin: "xìng",
+          meaning: "svabhava, own nature",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "至",
-          "Piyins": "zhì",
-          "Meanings": "reach, arrive",
-          "mistakes": 0
+          hanzi: "至",
+          pinyin: "zhì",
+          meaning: "reach, arrive",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "住",
-          "Piyins": "zhù",
-          "Meanings": "inhabit, stability",
-          "mistakes": 0
+          hanzi: "住",
+          pinyin: "zhù",
+          meaning: "inhabit, stability",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "初",
-          "Piyins": "chū",
-          "Meanings": "first, beginning",
-          "mistakes": 0
+          hanzi: "初",
+          pinyin: "chū",
+          meaning: "first, beginning",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "上",
-          "Piyins": "shàng",
-          "Meanings": "above, up",
-          "mistakes": 0
+          hanzi: "上",
+          pinyin: "shàng",
+          meaning: "above, up",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "食",
-          "Piyins": "shí",
-          "Meanings": "eat, food, feed",
-          "mistakes": 0
+          hanzi: "食",
+          pinyin: "shí",
+          meaning: "eat, food, feed",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "天",
-          "Piyins": "tiān",
-          "Meanings": "deva world, heaven",
-          "mistakes": 0
+          hanzi: "天",
+          pinyin: "tiān",
+          meaning: "deva world, heaven",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "復",
-          "Piyins": "fù",
-          "Meanings": "repeat, or yet, return",
-          "mistakes": 0
+          hanzi: "復",
+          pinyin: "fù",
+          meaning: "repeat, or yet, return",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "六",
-          "Piyins": "liù",
-          "Meanings": "6, six",
-          "mistakes": 0
+          hanzi: "六",
+          pinyin: "liù",
+          meaning: "6, six",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "信",
-          "Piyins": "xìn",
-          "Meanings": "trust, śraddhā",
-          "mistakes": 0
+          hanzi: "信",
+          pinyin: "xìn",
+          meaning: "trust, śraddhā",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "數",
-          "Piyins": "shǔ",
-          "Meanings": "number, several, frequently",
-          "mistakes": 0
+          hanzi: "數",
+          pinyin: "shǔ",
+          meaning: "number, several, frequently",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "聖",
-          "Piyins": "shèng",
-          "Meanings": "noble, arya pudgala, 4 noble truths",
-          "mistakes": 0
+          hanzi: "聖",
+          pinyin: "shèng",
+          meaning: "noble, arya pudgala, 4 noble truths",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "施",
-          "Piyins": "shī",
-          "Meanings": "offering, offer",
-          "mistakes": 0
+          hanzi: "施",
+          pinyin: "shī",
+          meaning: "offering, offer",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "出",
-          "Piyins": "chū",
-          "Meanings": "exit, recluse, rupture",
-          "mistakes": 0
+          hanzi: "出",
+          pinyin: "chū",
+          meaning: "exit, recluse, rupture",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "洹",
-          "Piyins": "huán",
-          "Meanings": "phonetic way to compose the word like nirvana and srota-āpanna",
-          "mistakes": 0
+          hanzi: "洹",
+          pinyin: "huán",
+          meaning:
+            "phonetic way to compose the word like nirvana and srotāpanna",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "堅",
-          "Piyins": "jiān",
-          "Meanings": "solidity",
-          "mistakes": 0
+          hanzi: "堅",
+          pinyin: "jiān",
+          meaning: "solidity",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "使",
-          "Piyins": "shǐ",
-          "Meanings": "klesha, cause, make",
-          "mistakes": 0
+          hanzi: "使",
+          pinyin: "shǐ",
+          meaning: "klesha, cause, make",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "火",
-          "Piyins": "huǒ",
-          "Meanings": "heat, fire",
-          "mistakes": 0
+          hanzi: "火",
+          pinyin: "huǒ",
+          meaning: "heat, fire",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "集",
-          "Piyins": "jí",
-          "Meanings": "truth of origin, collection",
-          "mistakes": 0
+          hanzi: "集",
+          pinyin: "jí",
+          meaning: "truth of origin, collection",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "求",
-          "Piyins": "qiú",
-          "Meanings": "seek, request",
-          "mistakes": 0
+          hanzi: "求",
+          pinyin: "qiú",
+          meaning: "seek, request",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "具",
-          "Piyins": "jù",
-          "Meanings": "complete, perfect",
-          "mistakes": 0
+          hanzi: "具",
+          pinyin: "jù",
+          meaning: "complete, perfect",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "令",
-          "Piyins": "lìng",
-          "Meanings": "to command, to order, cause, condition",
-          "mistakes": 0
+          hanzi: "令",
+          pinyin: "lìng",
+          meaning: "to command, to order, cause, condition",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "比",
-          "Piyins": "bǐ",
-          "Meanings": "compare, analogy",
-          "mistakes": 0
+          hanzi: "比",
+          pinyin: "bǐ",
+          meaning: "compare, analogy",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "之",
-          "Piyins": "zhī",
-          "Meanings": "of, it, possessive",
-          "mistakes": 0
+          hanzi: "之",
+          pinyin: "zhī",
+          meaning: "of, it, possessive",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "少",
-          "Piyins": "shǎo",
-          "Meanings": "few, little",
-          "mistakes": 0
+          hanzi: "少",
+          pinyin: "shǎo",
+          meaning: "few, little",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "合",
-          "Piyins": "gě",
-          "Meanings": "combine, join, union",
-          "mistakes": 0
+          hanzi: "合",
+          pinyin: "gě",
+          meaning: "combine, join, union",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "難",
-          "Piyins": "nán",
-          "Meanings": "difficult, hard, obstacle",
-          "mistakes": 0
+          hanzi: "難",
+          pinyin: "nán",
+          meaning: "difficult, hard, obstacle",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "更",
-          "Piyins": "gèng",
-          "Meanings": "more, again, further",
-          "mistakes": 0
+          hanzi: "更",
+          pinyin: "gèng",
+          meaning: "more, again, further",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "破",
-          "Piyins": "pò",
-          "Meanings": "to refute, break, destroy",
-          "mistakes": 0
+          hanzi: "破",
+          pinyin: "pò",
+          meaning: "to refute, break, destroy",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "勝",
-          "Piyins": "shèng",
-          "Meanings": "victory, excel, supreme",
-          "mistakes": 0
+          hanzi: "勝",
+          pinyin: "shèng",
+          meaning: "victory, excel, supreme",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "乃",
-          "Piyins": "nǎi",
-          "Meanings": "then, thus, therefore",
-          "mistakes": 0
+          hanzi: "乃",
+          pinyin: "nǎi",
+          meaning: "then, thus, therefore",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "香",
-          "Piyins": "xiāng",
-          "Meanings": "fragrant, incense",
-          "mistakes": 0
+          hanzi: "香",
+          pinyin: "xiāng",
+          meaning: "fragrant, incense",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "憶",
-          "Piyins": "yì",
-          "Meanings": "remember, memory",
-          "mistakes": 0
+          hanzi: "憶",
+          pinyin: "yì",
+          meaning: "remember, memory",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "泥",
-          "Piyins": "ní",
-          "Meanings": "clay, defilement, impurity",
-          "mistakes": 0
+          hanzi: "泥",
+          pinyin: "ní",
+          meaning: "clay, defilement, impurity",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "瞋",
-          "Piyins": "chēn",
-          "Meanings": "anger, hate, dvesha",
-          "mistakes": 0
+          hanzi: "瞋",
+          pinyin: "chēn",
+          meaning: "anger, hate, dvesha",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "差",
-          "Piyins": "chā",
-          "Meanings": "distinction, difference",
-          "mistakes": 0
+          hanzi: "差",
+          pinyin: "chā",
+          meaning: "distinction, difference",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "七",
-          "Piyins": "qī",
-          "Meanings": "7",
-          "mistakes": 0
+          hanzi: "七",
+          pinyin: "qī",
+          meaning: "7",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "八",
-          "Piyins": "bā",
-          "Meanings": "8",
-          "mistakes": 0
+          hanzi: "八",
+          pinyin: "bā",
+          meaning: "8",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "疑",
-          "Piyins": "yí",
-          "Meanings": "doubt, suspect, indecision",
-          "mistakes": 0
+          hanzi: "疑",
+          pinyin: "yí",
+          meaning: "doubt, suspect, indecision",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "水",
-          "Piyins": "shuǐ",
-          "Meanings": "water, liquidity, fluidity",
-          "mistakes": 0
+          hanzi: "水",
+          pinyin: "shuǐ",
+          meaning: "water, liquidity, fluidity",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "足",
-          "Piyins": "jù",
-          "Meanings": "sufficient, completeness, foot",
-          "mistakes": 0
+          hanzi: "足",
+          pinyin: "jù",
+          meaning: "sufficient, completeness, foot",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "今",
-          "Piyins": "jīn",
-          "Meanings": "present, now, today",
-          "mistakes": 0
+          hanzi: "今",
+          pinyin: "jīn",
+          meaning: "present, now, today",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "習",
-          "Piyins": "xí",
-          "Meanings": "practice, study",
-          "mistakes": 0
+          hanzi: "習",
+          pinyin: "xí",
+          meaning: "practice, study",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "其",
-          "Piyins": "qí",
-          "Meanings": "this, such that",
-          "mistakes": 0
+          hanzi: "其",
+          pinyin: "qí",
+          meaning: "this, such that",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "深",
-          "Piyins": "shēn",
-          "Meanings": "deep",
-          "mistakes": 0
+          hanzi: "深",
+          pinyin: "shēn",
+          meaning: "deep",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "外",
-          "Piyins": "wài",
-          "Meanings": "outside, tirthika",
-          "mistakes": 0
+          hanzi: "外",
+          pinyin: "wài",
+          meaning: "outside, tirthika",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "口",
-          "Piyins": "kǒu",
-          "Meanings": "mouth",
-          "mistakes": 0
+          hanzi: "口",
+          pinyin: "kǒu",
+          meaning: "mouth",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "著",
-          "Piyins": "zhāo",
-          "Meanings": "attachment",
-          "mistakes": 0
+          hanzi: "著",
+          pinyin: "zhāo",
+          meaning: "attachment",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "漢",
-          "Piyins": "hàn",
-          "Meanings": "han ethnicity, used for transliteration",
-          "mistakes": 0
+          hanzi: "漢",
+          pinyin: "hàn",
+          meaning: "han ethnicity, used for transliteration",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "味",
-          "Piyins": "wèi",
-          "Meanings": "taste, also transliteration",
-          "mistakes": 0
+          hanzi: "味",
+          pinyin: "wèi",
+          meaning: "taste, also transliteration",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "陀",
-          "Piyins": "tuó",
-          "Meanings": "phonetic, also for transliteration, declivity",
-          "mistakes": 0
+          hanzi: "陀",
+          pinyin: "tuó",
+          meaning: "phonetic, also for transliteration, declivity",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "夫",
-          "Piyins": "fū",
-          "Meanings": "man, husband",
-          "mistakes": 0
+          hanzi: "夫",
+          pinyin: "fū",
+          meaning: "man, husband",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "結",
-          "Piyins": "jiē",
-          "Meanings": "produce, fruit",
-          "mistakes": 0
+          hanzi: "結",
+          pinyin: "jiē",
+          meaning: "produce, fruit",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "德",
-          "Piyins": "dé",
-          "Meanings": "merit, virtue",
-          "mistakes": 0
+          hanzi: "德",
+          pinyin: "dé",
+          meaning: "merit, virtue",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "到",
-          "Piyins": "dào",
-          "Meanings": "reach, realize",
-          "mistakes": 0
+          hanzi: "到",
+          pinyin: "dào",
+          meaning: "reach, realize",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "風",
-          "Piyins": "fēng",
-          "Meanings": "mobility, wind",
-          "mistakes": 0
+          hanzi: "風",
+          pinyin: "fēng",
+          meaning: "mobility, wind",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "凡",
-          "Piyins": "fán",
-          "Meanings": "ignorant, ordinary",
-          "mistakes": 0
+          hanzi: "凡",
+          pinyin: "fán",
+          meaning: "ignorant, ordinary",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "命",
-          "Piyins": "mìng",
-          "Meanings": "life",
-          "mistakes": 0
+          hanzi: "命",
+          pinyin: "mìng",
+          meaning: "life",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "重",
-          "Piyins": "chóng",
-          "Meanings": "heavy, repetition",
-          "mistakes": 0
+          hanzi: "重",
+          pinyin: "chóng",
+          meaning: "heavy, repetition",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "獄",
-          "Piyins": "yù",
-          "Meanings": "hell, prison",
-          "mistakes": 0
+          hanzi: "獄",
+          pinyin: "yù",
+          meaning: "hell, prison",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "癡",
-          "Piyins": "chī",
-          "Meanings": "avidya, ignorance",
-          "mistakes": 0
+          hanzi: "癡",
+          pinyin: "chī",
+          meaning: "avidya, ignorance",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "本",
-          "Piyins": "běn",
-          "Meanings": "root, origin, source",
-          "mistakes": 0
+          hanzi: "本",
+          pinyin: "běn",
+          meaning: "root, origin, source",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "百",
-          "Piyins": "bǎi",
-          "Meanings": "hundred, many, manifold",
-          "mistakes": 0
+          hanzi: "百",
+          pinyin: "bǎi",
+          meaning: "hundred, many, manifold",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "增",
-          "Piyins": "zēng",
-          "Meanings": "increase, add",
-          "mistakes": 0
+          hanzi: "增",
+          pinyin: "zēng",
+          meaning: "increase, add",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "丘",
-          "Piyins": "qiū",
-          "Meanings": "phonetic for bhikkhu, monk",
-          "mistakes": 0
+          hanzi: "丘",
+          pinyin: "qiū",
+          meaning: "phonetic for bhikkhu, monk",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "真",
-          "Piyins": "zhēn",
-          "Meanings": "true, logical truth",
-          "mistakes": 0
+          hanzi: "真",
+          pinyin: "zhēn",
+          meaning: "true, logical truth",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "便",
-          "Piyins": "biàn",
-          "Meanings": "opportune, then, even if",
-          "mistakes": 0
+          hanzi: "便",
+          pinyin: "biàn",
+          meaning: "opportune, then, even if",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "瓶",
-          "Piyins": "píng",
-          "Meanings": "vase, pot",
-          "mistakes": 0
+          hanzi: "瓶",
+          pinyin: "píng",
+          meaning: "vase, pot",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "量",
-          "Piyins": "liàng",
-          "Meanings": "measure, quantity",
-          "mistakes": 0
+          hanzi: "量",
+          pinyin: "liàng",
+          meaning: "measure, quantity",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "了",
-          "Piyins": "liǎo",
-          "Meanings": "understand, finish",
-          "mistakes": 0
+          hanzi: "了",
+          pinyin: "liǎo",
+          meaning: "understand, finish",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "清",
-          "Piyins": "qīng",
-          "Meanings": "pure, clear",
-          "mistakes": 0
+          hanzi: "清",
+          pinyin: "qīng",
+          meaning: "pure, clear",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "虛",
-          "Piyins": "xū",
-          "Meanings": "empty, false",
-          "mistakes": 0
+          hanzi: "虛",
+          pinyin: "xū",
+          meaning: "empty, false",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "必",
-          "Piyins": "bì",
-          "Meanings": "must, necessity",
-          "mistakes": 0
+          hanzi: "必",
+          pinyin: "bì",
+          meaning: "must, necessity",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "熱",
-          "Piyins": "rè",
-          "Meanings": "hot, heat",
-          "mistakes": 0
+          hanzi: "熱",
+          pinyin: "rè",
+          meaning: "hot, heat",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "慢",
-          "Piyins": "màn",
-          "Meanings": "arrogant, conceit, mana",
-          "mistakes": 0
+          hanzi: "慢",
+          pinyin: "màn",
+          meaning: "arrogant, conceit, mana",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "昧",
-          "Piyins": "mèi",
-          "Meanings": "dark, ignorance",
-          "mistakes": 0
+          hanzi: "昧",
+          pinyin: "mèi",
+          meaning: "dark, ignorance",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "墮",
-          "Piyins": "duò",
-          "Meanings": "fall",
-          "mistakes": 0
+          hanzi: "墮",
+          pinyin: "duò",
+          meaning: "fall",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "子",
-          "Piyins": "zǐ",
-          "Meanings": "child, follower",
-          "mistakes": 0
+          hanzi: "子",
+          pinyin: "zǐ",
+          meaning: "child, follower",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "門",
-          "Piyins": "mén",
-          "Meanings": "door, gate",
-          "mistakes": 0
+          hanzi: "門",
+          pinyin: "mén",
+          meaning: "door, gate",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "和",
-          "Piyins": "hé",
-          "Meanings": "harmony, peace, and",
-          "mistakes": 0
+          hanzi: "和",
+          pinyin: "hé",
+          meaning: "harmony, peace, and",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "恚",
-          "Piyins": "huì",
-          "Meanings": "hate, dvesha",
-          "mistakes": 0
+          hanzi: "恚",
+          pinyin: "huì",
+          meaning: "hate, dvesha",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "失",
-          "Piyins": "shī",
-          "Meanings": "lose, loss",
-          "mistakes": 0
+          hanzi: "失",
+          pinyin: "shī",
+          meaning: "lose, loss",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "違",
-          "Piyins": "wéi",
-          "Meanings": "violate, transgression",
-          "mistakes": 0
+          hanzi: "違",
+          pinyin: "wéi",
+          meaning: "violate, transgression",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "續",
-          "Piyins": "xù",
-          "Meanings": "continue, continuity",
-          "mistakes": 0
+          hanzi: "續",
+          pinyin: "xù",
+          meaning: "continue, continuity",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "攝",
-          "Piyins": "shè",
-          "Meanings": "to include, to absorb",
-          "mistakes": 0
+          hanzi: "攝",
+          pinyin: "shè",
+          meaning: "to include, to absorb",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "遠",
-          "Piyins": "yuǎn",
-          "Meanings": "far, distant",
-          "mistakes": 0
+          hanzi: "遠",
+          pinyin: "yuǎn",
+          meaning: "far, distant",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "憂",
-          "Piyins": "yōu",
-          "Meanings": "worry, sorrow, anxiety",
-          "mistakes": 0
+          hanzi: "憂",
+          pinyin: "yōu",
+          meaning: "worry, sorrow, anxiety",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "儀",
-          "Piyins": "yí",
-          "Meanings": "reception of vinaya, rite, manner",
-          "mistakes": 0
+          hanzi: "儀",
+          pinyin: "yí",
+          meaning: "reception of vinaya, rite, manner",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "須",
-          "Piyins": "xū",
-          "Meanings": "phonetic for sotāpanna, srotāpanna, must",
-          "mistakes": 0
+          hanzi: "須",
+          pinyin: "xū",
+          meaning: "phonetic for sotāpanna, srotāpanna, must",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "俱",
-          "Piyins": "jù",
-          "Meanings": "complete, both, to be together",
-          "mistakes": 0
+          hanzi: "俱",
+          pinyin: "jù",
+          meaning: "complete, both, to be together",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "決",
-          "Piyins": "jué",
-          "Meanings": "decide, determine",
-          "mistakes": 0
+          hanzi: "決",
+          pinyin: "jué",
+          meaning: "decide, determine",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "塵",
-          "Piyins": "chén",
-          "Meanings": "dust, 5 or 6 objects of consciousness",
-          "mistakes": 0
+          hanzi: "塵",
+          pinyin: "chén",
+          meaning: "dust, 5 or 6 objects of consciousness",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "由",
-          "Piyins": "yóu",
-          "Meanings": "from, because of this",
-          "mistakes": 0
+          hanzi: "由",
+          pinyin: "yóu",
+          meaning: "from, because of this",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "還",
-          "Piyins": "huán",
-          "Meanings": "return, rebirth",
-          "mistakes": 0
+          hanzi: "還",
+          pinyin: "huán",
+          meaning: "return, rebirth",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "學",
-          "Piyins": "xué",
-          "Meanings": "learn, study",
-          "mistakes": 0
+          hanzi: "學",
+          pinyin: "xué",
+          meaning: "learn, study",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "造",
-          "Piyins": "zào",
-          "Meanings": "make, build",
-          "mistakes": 0
+          hanzi: "造",
+          pinyin: "zào",
+          meaning: "make, build",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "師",
-          "Piyins": "shī",
-          "Meanings": "teacher, master",
-          "mistakes": 0
+          hanzi: "師",
+          pinyin: "shī",
+          meaning: "teacher, master",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "用",
-          "Piyins": "yòng",
-          "Meanings": "in function of, use",
-          "mistakes": 0
+          hanzi: "用",
+          pinyin: "yòng",
+          meaning: "in function of, use",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "益",
-          "Piyins": "yì",
-          "Meanings": "benefit, advantages, increase",
-          "mistakes": 0
+          hanzi: "益",
+          pinyin: "yì",
+          meaning: "benefit, advantages, increase",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "持",
-          "Piyins": "chí",
-          "Meanings": "hold, maintain",
-          "mistakes": 0
+          hanzi: "持",
+          pinyin: "chí",
+          meaning: "hold, maintain",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "日",
-          "Piyins": "rì",
-          "Meanings": "sun, day",
-          "mistakes": 0
+          hanzi: "日",
+          pinyin: "rì",
+          meaning: "sun, day",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "除",
-          "Piyins": "chú",
-          "Meanings": "remove, to exclude",
-          "mistakes": 0
+          hanzi: "除",
+          pinyin: "chú",
+          meaning: "remove, to exclude",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "功",
-          "Piyins": "gōng",
-          "Meanings": "merit, virtue",
-          "mistakes": 0
+          hanzi: "功",
+          pinyin: "gōng",
+          meaning: "merit, virtue",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "障",
-          "Piyins": "zhàng",
-          "Meanings": "obstacle, barrier",
-          "mistakes": 0
+          hanzi: "障",
+          pinyin: "zhàng",
+          meaning: "obstacle, barrier",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "止",
-          "Piyins": "zhǐ",
-          "Meanings": "stop, to block",
-          "mistakes": 0
+          hanzi: "止",
+          pinyin: "zhǐ",
+          meaning: "stop, to block",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "九",
-          "Piyins": "jiǔ",
-          "Meanings": "nine, ninth, nine stages",
-          "mistakes": 0
+          hanzi: "九",
+          pinyin: "jiǔ",
+          meaning: "nine, ninth, nine stages",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "通",
-          "Piyins": "tōng",
-          "Meanings": "pass through, understand",
-          "mistakes": 0
+          hanzi: "通",
+          pinyin: "tōng",
+          meaning: "pass through, understand",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "發",
-          "Piyins": "fā",
-          "Meanings": "to make arise, to issue",
-          "mistakes": 0
+          hanzi: "發",
+          pinyin: "fā",
+          meaning: "to make arise, to issue",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "動",
-          "Piyins": "dòng",
-          "Meanings": "movement, move, change",
-          "mistakes": 0
+          hanzi: "動",
+          pinyin: "dòng",
+          meaning: "movement, move, change",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-          "Hanzis": "邊",
-          "Piyins": "biān",
-          "Meanings": "extreme, edge",
-          "mistakes": 0
+          hanzi: "邊",
+          pinyin: "biān",
+          meaning: "extreme, edge",
+          difficulty: 0,
+          lastReviewed: null,
         },
         {
-        "Hanzis": "光",
-        "Piyins": "guāng",
-        "Meanings": "light, bright",
-        "mistakes": 0
+          hanzi: "光",
+          pinyin: "guāng",
+          meaning: "light, bright",
+          difficulty: 0,
+          lastReviewed: null,
         },
-    {
-        "Hanzis": "下",
-        "Piyins": "xià",
-        "Meanings": "down, below, lower",
-        "mistakes": 0
-    }
+        {
+          hanzi: "下",
+          pinyin: "xià",
+          meaning: "down, below, lower",
+          difficulty: 0,
+          lastReviewed: null,
+        },
       ];
 
-        /**
-         * Quiz state variables
-         */
-        let totalMistakes = 0;
-        let score = 0;
-        let attemptsRemaining = 3;
-        let currentQuestion = {};
-        let activeHanzi = [...data]; // Clone dos Hanzi para manipular sem alterar o original
-        const totalHanzi = data.length;
+      let currentHanziIndex = -1; // Index of the currently displayed hanzi
+      // References to DOM elements
+      const answersContainer = document.getElementById("answers"); // Element for answer buttons
+      const difficultyBtnsContainer =
+        document.getElementById("difficulty-btns");
+      const hanziDisplay = document.getElementById("hanzi-display");
+      const hanziDetails = document.getElementById("hanzi-details");
+      const pinyinDisplay = document.getElementById("pinyin-display");
+      const meaningDisplay = document.getElementById("meaning-display");
+      const hanziSeenCount = document.getElementById("hanzi-seen");
+      const hanziToReviewCount = document.getElementById("hanzi-to-review");
+      const totalHanziCount = document.getElementById("total-hanzi-count");
+      const completionMessage = document.getElementById("completion-message");
 
-        /**
-         * Initializes the quiz
-         */
-        function init() {
-            resetGameState();
-            updateTotalHanziCount();
-            displayQuestion();
+      /**
+       * Loads user progress from localStorage.
+       * If saved data exists, it's merged with the initial data,
+       * ensuring new hanzis in the original list are preserved.
+       */
+      function loadProgress() {
+        try {
+          const savedData = localStorage.getItem("hanziFlowData");
+          if (savedData) {
+            const parsedData = JSON.parse(savedData);
+            // Update difficulty and lastReviewed properties for existing hanzis
+            hanziData.forEach((hanzi) => {
+              const savedHanzi = parsedData.find(
+                (d) => d.hanzi === hanzi.hanzi
+              );
+              if (savedHanzi) {
+                hanzi.difficulty = savedHanzi.difficulty;
+                hanzi.lastReviewed = savedHanzi.lastReviewed;
+              }
+            });
+          }
+        } catch (e) {
+          console.error("Error loading progress from localStorage:", e);
+          // Clear corrupted data if parsing error occurs
+          localStorage.removeItem("hanziFlowData");
         }
-
-        /**
-         * Resets game state variables
-         */
-        function resetGameState() {
-            score = 0;
-            totalMistakes = 0;
-            attemptsRemaining = 3;
-            activeHanzi = [...data]; // Restaura a lista de Hanzi ativos
-            document.getElementById('total-mistakes').innerText = totalMistakes;
-            document.getElementById('score').innerText = score;
-            document.getElementById('completion-message').style.display = 'none';
-        }
-
-        /**
-         * Updates the total Hanzi count on the UI
-         */
-        function updateTotalHanziCount() {
-            document.getElementById('goal').innerText = totalHanzi;
-        }
-
-        /**
-         * Displays the next question
-         */
-        function displayQuestion() {
-            if (activeHanzi.length === 0) {
-                handleQuizCompletion();
-                return;
-            }
-
-            currentQuestion = getNextHanzi();
-            attemptsRemaining = 3;
-            updateAttemptsDisplay();
-
-            const correctAnswer = currentQuestion.Meanings;
-            const answerOptions = generateAnswerOptions(correctAnswer);
-            populateQuestionUI(correctAnswer, answerOptions);
-        }
-
-        /**
-         * Selects the next Hanzi based on mistake priority
-         */
-        function getNextHanzi() {
-            activeHanzi.sort((a, b) => b.mistakes - a.mistakes);
-            return activeHanzi[0];
-        }
-
-        /**
-         * Updates the attempts display
-         */
-        function updateAttemptsDisplay() {
-            document.getElementById('attempts').innerText = attemptsRemaining;
-        }
-
-        /**
-         * Generates shuffled answer options
-         */
-         function generateAnswerOptions(correctAnswer) {
-          const allMeanings = data.map(item => item.Meanings).filter(m => m !== correctAnswer);
-          const uniqueOptions = new Set([correctAnswer, ...shuffle(allMeanings).slice(0, 3)]);
-          
-          const shuffledOptions = shuffle(Array.from(uniqueOptions));
-          return shuffledOptions;
       }
 
-        /**
-         * Populates the UI with the current question and answers
-         */
-        function populateQuestionUI(correctAnswer, answerOptions) {
-            document.getElementById('hanzi').innerText = currentQuestion.Hanzis;
-            document.getElementById('pinyin').innerText = currentQuestion.Piyins;
-            document.getElementById('answers').innerHTML = answerOptions.map(option =>
-                `<button onclick="checkAnswer('${option.replace(/'/g, "\\'")}')">${option}</button>`
-            ).join('');
+      /**
+       * Saves the current hanzi state (difficulty and last review) to localStorage.
+       */
+      function saveProgress() {
+        try {
+          localStorage.setItem("hanziFlowData", JSON.stringify(hanziData));
+        } catch (e) {
+          console.error("Error saving progress to localStorage:", e);
+        }
+      }
+
+      // Defines review intervals in milliseconds based on difficulty.
+      // These are example values for demonstration. For real use, they would be longer.
+      const reviewIntervals = {
+        0: 0, // New hanzi: show immediately
+        1: 5 * 60 * 1000, // Difficult: 5 minutes
+        2: 30 * 60 * 1000, // Medium: 30 minutes
+        3: 24 * 60 * 60 * 1000, // Easy: 1 day
+      };
+
+      /**
+       * Selects the next hanzi for review based on the spaced repetition algorithm.
+       * Prioritizes new hanzis or those overdue for review.
+       * @returns {Object|null} The hanzi object to display, or null if no hanzis are due for review.
+       */
+      function getNextHanziForReview() {
+        const now = Date.now(); // Current time in milliseconds
+
+        // Filter hanzis that need to be reviewed now
+        const dueHanzis = hanziData.filter((hanzi) => {
+          // If it's a new hanzi, it needs immediate review
+          if (hanzi.difficulty === 0 && hanzi.lastReviewed === null) {
+            return true;
+          }
+          // If already reviewed, check if the review time has passed
+          if (hanzi.lastReviewed !== null) {
+            const nextReviewTime =
+              new Date(hanzi.lastReviewed).getTime() +
+              reviewIntervals[hanzi.difficulty];
+            return now >= nextReviewTime;
+          }
+          return false; // Does not need review now
+        });
+
+        // If there are hanzis to review, sort them by difficulty (most difficult first)
+        // and return the first one.
+        if (dueHanzis.length > 0) {
+          // Sort from most difficult (difficulty 1) to easiest (difficulty 3)
+          dueHanzis.sort((a, b) => a.difficulty - b.difficulty);
+          return dueHanzis[0];
         }
 
-        /**
-         * Handles the answer selection
-         */
-        function checkAnswer(selectedAnswer) {
-            const correctAnswer = currentQuestion.Meanings;
-            const buttons = document.querySelectorAll('.answers button');
+        // If no hanzis are due for review at the moment, return null
+        return null;
+      }
 
-            buttons.forEach(button => button.disabled = true);
+      /**
+       * Generates an array of meaning options, including the correct answer
+       * and some random (distractor) options.
+       * @param {string} correctMeaning The correct meaning of the hanzi.
+       * @returns {Array<string>} A shuffled array of meanings for the buttons.
+       */
+      function generateAnswerOptions(correctMeaning) {
+        // Get all other meanings, excluding the correct one
+        const allOtherMeanings = hanziData
+          .map((item) => item.meaning)
+          .filter((m) => m !== correctMeaning);
 
-            if (selectedAnswer === correctAnswer) {
-                score++;
-                document.getElementById('score').innerText = score;
-            
-                buttons.forEach(button => {
-                    if (button.innerText === correctAnswer) button.style.backgroundColor = 'green';
-                });
-            
-                // Remover o Hanzi da lista de ativos após acertar
-                activeHanzi = activeHanzi.filter(hanzi => hanzi !== currentQuestion);
-            
-                setTimeout(() => displayQuestion(), 500);
-            } else {
-                attemptsRemaining--;
-                totalMistakes++;
-                currentQuestion.mistakes++;
-                updateAttemptsDisplay();
-                document.getElementById('total-mistakes').innerText = totalMistakes;
+        // Shuffle other meanings and pick 3 distractors
+        const shuffledOtherMeanings = shuffleArray(allOtherMeanings).slice(
+          0,
+          3
+        );
 
-                buttons.forEach(button => {
-                    if (button.innerText === selectedAnswer) button.style.backgroundColor = 'red';
-                });
+        // Combine the correct meaning with distractors and shuffle everything
+        const options = [correctMeaning, ...shuffledOtherMeanings];
+        return shuffleArray(options);
+      }
 
-                if (attemptsRemaining === 0) {
-                    buttons.forEach(button => {
-                        if (button.innerText === correctAnswer) button.style.backgroundColor = 'green';
-                    });
+      /**
+       * Shuffles an array using the Fisher-Yates algorithm.
+       * @param {Array<any>} array The array to shuffle.
+       * @returns {Array<any>} The shuffled array.
+       */
+      function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+      }
 
-                    setTimeout(() => displayQuestion(), 500);
-                } else {
-                    setTimeout(() => buttons.forEach(button => button.disabled = false), 500);
-                }
+      /**
+       * Displays the current hanzi on the interface.
+       * Manages the visibility of interface elements (answer buttons/difficulty buttons).
+       */
+      function displayCurrentHanzi() {
+        const hanziToDisplay = getNextHanziForReview();
+
+        if (!hanziToDisplay) {
+          // If no hanzis are due for review, display completion message
+          completionMessage.style.display = "block";
+          hanziDisplay.innerText = "🎉"; // An emoji to indicate completion
+          hanziDetails.style.display = "none";
+          answersContainer.style.display = "none"; // Hide answer buttons
+          difficultyBtnsContainer.style.display = "none"; // Hide difficulty buttons
+          updateCounts(); // Update counts even without hanzi to display
+          return;
+        }
+
+        // Hide completion message if there are hanzis to display
+        completionMessage.style.display = "none";
+
+        // Find the index of the hanzi to display so we can update it in the original array
+        currentHanziIndex = hanziData.indexOf(hanziToDisplay);
+        const currentHanzi = hanziData[currentHanziIndex];
+
+        // Update flashcard content
+        hanziDisplay.innerText = currentHanzi.hanzi;
+        pinyinDisplay.innerText = currentHanzi.pinyin;
+        meaningDisplay.innerText = currentHanzi.meaning;
+
+        // Hide details and difficulty buttons, show answer buttons
+        hanziDetails.style.display = "none";
+        difficultyBtnsContainer.style.display = "none";
+        answersContainer.style.display = "flex"; // Show answer buttons
+
+        // Generate and populate answer buttons
+        const answerOptions = generateAnswerOptions(currentHanzi.meaning);
+        answersContainer.innerHTML = answerOptions
+          .map(
+            (option) =>
+              `<button onclick="checkAnswer(this, '${option.replace(
+                /'/g,
+                "\\'"
+              )}')">${option}</button>`
+          )
+          .join("");
+
+        updateCounts(); // Update progress counts
+      }
+
+      /**
+       * Checks the selected answer from the user.
+       * Provides visual feedback, reveals the meaning, then shows difficulty buttons.
+       * @param {HTMLElement} selectedButton The button the user clicked.
+       * @param {string} selectedAnswer The meaning selected by the user.
+       */
+      function checkAnswer(selectedButton, selectedAnswer) {
+        const currentHanzi = hanziData[currentHanziIndex];
+        const correctAnswer = currentHanzi.meaning;
+        const allAnswerButtons = answersContainer.querySelectorAll("button");
+
+        // Disable all answer buttons to prevent multiple clicks
+        allAnswerButtons.forEach((button) => (button.disabled = true));
+
+        if (selectedAnswer === correctAnswer) {
+          selectedButton.classList.add("correct"); // Apply green animation
+        } else {
+          selectedButton.classList.add("incorrect"); // Apply red animation
+          // Find and highlight the correct answer
+          allAnswerButtons.forEach((button) => {
+            if (button.innerText === correctAnswer) {
+              button.style.backgroundColor = "#66bb6a"; // Verde mais suave para o correto
+              button.style.color = "white"; // Garante que o texto seja visível
             }
+          });
         }
 
-        /**
-         * Handles quiz completion
-         */
-        function handleQuizCompletion() {
-            document.getElementById('completion-message').style.display = 'block';
-            setTimeout(init, 2000);
-        }
+        // Reveal pinyin and meaning
+        hanziDetails.style.display = "block";
+        answersContainer.style.display = "none"; // Hide answer buttons
 
-        /**
-         * Shuffles an array
-         */
-        function shuffle(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
+        // After a short delay for the animation, show difficulty buttons
+        setTimeout(() => {
+          difficultyBtnsContainer.style.display = "flex";
+        }, 700); // Adjust time if animation is longer/shorter
+      }
 
-        // Initialize the quiz on page load
-        init();
+      /**
+       * Sets the difficulty for the current hanzi, updates the last reviewed date,
+       * saves progress, and displays the next hanzi.
+       * @param {number} difficultyLevel The difficulty level (1: Difficult, 2: Medium, 3: Easy).
+       */
+      function setDifficulty(difficultyLevel) {
+        const currentHanzi = hanziData[currentHanziIndex];
+        currentHanzi.difficulty = difficultyLevel; // Update difficulty
+        currentHanzi.lastReviewed = Date.now(); // Set last reviewed date to now
+        saveProgress(); // Save changes to localStorage
+        displayCurrentHanzi(); // Load and display the next hanzi
+      }
+
+      /**
+       * Updates the progress counts on the user interface.
+       */
+      function updateCounts() {
+        // Count how many hanzis have been reviewed at least once
+        const hanzisSeen = hanziData.filter(
+          (h) => h.lastReviewed !== null
+        ).length;
+
+        // Count how many hanzis are pending review (new or overdue)
+        const hanzisToReview = hanziData.filter((hanzi) => {
+          if (hanzi.difficulty === 0 && hanzi.lastReviewed === null)
+            return true; // Novo
+          if (hanzi.lastReviewed !== null) {
+            const nextReviewTime =
+              new Date(hanzi.lastReviewed).getTime() +
+              reviewIntervals[hanzi.difficulty];
+            return Date.now() >= nextReviewTime; // Atrasado
+          }
+          return false;
+        }).length;
+
+        hanziSeenCount.innerText = hanzisSeen;
+        hanziToReviewCount.innerText = hanzisToReview;
+        totalHanziCount.innerText = hanziData.length;
+      }
+
+      // --- Event Listeners ---
+
+      // Add listeners for difficulty buttons
+      difficultyBtnsContainer.querySelectorAll("button").forEach((button) => {
+        button.addEventListener("click", (event) => {
+          // Get the difficulty level from the 'data-difficulty' attribute
+          const difficulty = parseInt(event.target.dataset.difficulty);
+          setDifficulty(difficulty);
+        });
+      });
+
+      // Initialize the application when the DOM is fully loaded
+      document.addEventListener("DOMContentLoaded", () => {
+        loadProgress(); // Load saved progress
+        displayCurrentHanzi(); // Display the first hanzi
+        // Set an interval to update counts and check for new hanzis to review
+        // This is useful if the user leaves the page open for a long time
+        setInterval(updateCounts, 60 * 1000); // Every minute
+      });
     </script>
-</body>
-
+  </body>
 </html>
