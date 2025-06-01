@@ -5,104 +5,97 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HanziFlow - Dynamic Memorization</title>
     <style>
-      /* General styles for the body */
       body {
-        background-color: #e0eaf2; /* Um azul muito claro e frio para o fundo */
-        font-family: "Inter", sans-serif; /* Fonte moderna e legível */
-        color: #2c3e50; /* Cor de texto azul-acinzentado escuro e profundo */
+        background-color: #e0eaf2;
+        font-family: "Inter", sans-serif;
+        color: #2c3e50;
         margin: 0;
         padding: 0;
         font-size: 22px;
-        min-height: 100vh; /* Ocupa a altura total da viewport */
+        min-height: 100vh;
         display: flex;
-        justify-content: center; /* Centraliza horizontalmente */
-        align-items: center; /* Centraliza verticalmente */
-        box-sizing: border-box; /* Inclui padding e borda no cálculo de largura/altura */
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
       }
 
-      /* Main content container */
       .content {
         text-align: center;
         padding: 30px;
-        max-width: 900px; /* Largura máxima ligeiramente maior para desktops */
-        width: 90%; /* Largura fluida para responsividade */
-        background-color: #ffffff; /* Fundo branco limpo para o cartão */
-        border-radius: 18px; /* Cantos ligeiramente mais arredondados */
-        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15); /* Sombra mais pronunciada e suave */
-        box-sizing: border-box; /* Inclui padding e borda no cálculo de largura/altura */
-        transition: all 0.3s ease-in-out; /* Transições suaves para redimensionamento */
+        max-width: 900px;
+        width: 90%;
+        background-color: #ffffff;
+        border-radius: 18px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        box-sizing: border-box;
+        transition: all 0.3s ease-in-out;
       }
 
-      /* Main title */
       h1 {
-        color: #1a5276; /* Um azul royal forte e profundo para o título */
+        color: #1a5276;
         margin-bottom: 30px;
         font-size: clamp(
           30px,
           5vw,
           48px
-        ); /* Tamanho de fonte responsivo para o título */
+        );
       }
 
-      /* Style for the displayed hanzi */
       .hanzi-display {
         font-size: clamp(
           80px,
           20vw,
           180px
-        ); /* Tamanho muito grande e responsivo para o hanzi */
+        );
         font-weight: bold;
         margin: 25px 0;
-        text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3); /* Sombra mais suave e maior */
-        line-height: 1; /* Garante que não haja espaço extra acima/abaixo do hanzi */
-        color: #0d47a1; /* Um azul rico e profundo para o próprio hanzi */
+        text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+        line-height: 1;
+        color: #0d47a1;
       }
 
-      /* Hanzi information (pinyin and meaning) */
       .hanzi-info {
         margin-top: 15px;
-        font-size: clamp(18px, 3.5vw, 28px); /* Tamanho de fonte responsivo */
-        color: #546e7a; /* Um azul-acinzentado ligeiramente mais claro para informações */
-        line-height: 1.6; /* Espaçamento de linha melhorado */
+        font-size: clamp(18px, 3.5vw, 28px);
+        color: #546e7a;
+        line-height: 1.6;
       }
 
       .hanzi-info strong {
-        color: #37474f; /* Azul-acinzentado mais escuro para rótulos */
+        color: #37474f;
       }
 
-      /* Container for answer buttons */
       .answers {
         margin-top: 25px;
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        gap: 10px; /* Espaço entre os botões */
+        gap: 10px;
       }
 
-      /* Style for answer buttons */
       .answers button {
-        background-color: #4a6a9b; /* Um azul royal de tom médio para as opções */
+        background-color: #4a6a9b;
         color: white;
         border: none;
         padding: 12px 25px;
-        margin: 5px; /* Mantém alguma margem para botões individuais */
-        border-radius: 8px; /* Ligeiramente mais arredondado */
+        margin: 5px;
+        border-radius: 8px;
         cursor: pointer;
         font-size: clamp(
           16px,
           3vw,
           22px
-        ); /* Tamanho de fonte responsivo para os botões */
+        );
         transition: background-color 0.3s ease, transform 0.1s ease,
           box-shadow 0.3s ease;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Sombra mais suave */
-        flex: 1 1 auto; /* Permite que os botões cresçam e diminuam */
-        max-width: 48%; /* Largura máxima para permitir dois botões por linha em telas maiores */
-        min-width: 140px; /* Largura mínima para evitar esmagamento */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        flex: 1 1 auto;
+        max-width: 48%;
+        min-width: 140px;
       }
 
       .answers button:hover {
-        background-color: #37538c; /* Azul royal mais escuro ao passar o mouse */
+        background-color: #37538c;
         transform: translateY(-2px);
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
       }
@@ -112,22 +105,21 @@
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
 
-      /* Animations for visual feedback */
       .answers button.correct {
-        animation: flashGreen 0.6s ease-in-out forwards; /* Mantido verde para feedback de correção */
+        animation: flashGreen 0.6s ease-in-out forwards;
       }
 
       .answers button.incorrect {
-        animation: flashRed 0.6s ease-in-out forwards; /* Mantido vermelho para feedback de incorreção */
+        animation: flashRed 0.6s ease-in-out forwards;
       }
 
       @keyframes flashGreen {
         0% {
           background-color: #4caf50;
-        } /* Verde original */
+        }
         50% {
           background-color: #28a745;
-        } /* Verde mais escuro */
+        }
         100% {
           background-color: #4caf50;
         }
@@ -136,40 +128,38 @@
       @keyframes flashRed {
         0% {
           background-color: #f44336;
-        } /* Vermelho original */
+        }
         50% {
           background-color: #dc3545;
-        } /* Vermelho mais escuro */
+        }
         100% {
           background-color: #f44336;
         }
       }
 
-      /* Container for difficulty buttons */
       .difficulty-btns {
         display: flex;
-        flex-wrap: wrap; /* Permite que os botões quebrem em telas pequenas */
+        flex-wrap: wrap;
         justify-content: center;
         margin-top: 25px;
-        gap: 10px; /* Espaço entre os botões */
+        gap: 10px;
       }
 
-      /* Style for difficulty buttons */
       .difficulty-btns button {
-        background-color: #78909c; /* Cinza mais suave para o padrão */
+        background-color: #78909c;
         color: white;
         border: none;
         padding: 12px 25px;
         margin: 5px;
         border-radius: 8px;
         cursor: pointer;
-        font-size: clamp(16px, 3vw, 22px); /* Tamanho de fonte responsivo */
+        font-size: clamp(16px, 3vw, 22px);
         transition: background-color 0.3s ease, transform 0.1s ease,
           box-shadow 0.3s ease;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        flex: 1 1 auto; /* Permite que os botões cresçam e diminuam */
-        max-width: 30%; /* Largura máxima para permitir três botões por linha em telas maiores */
-        min-width: 120px; /* Largura mínima para evitar esmagamento */
+        flex: 1 1 auto;
+        max-width: 30%;
+        min-width: 120px;
       }
 
       .difficulty-btns button:hover {
@@ -178,56 +168,52 @@
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
       }
 
-      /* Specific colours for difficulty buttons (adjusted for softness) */
       .difficulty-btns button[data-difficulty="3"] {
         background-color: #2ecc71;
-      } /* Fácil - Um verde mais vibrante */
+      }
       .difficulty-btns button[data-difficulty="2"] {
         background-color: #f39c12;
         color: white;
-      } /* Médio - Um amarelo/laranja mais distinto */
+      }
       .difficulty-btns button[data-difficulty="1"] {
         background-color: #e74c3c;
-      } /* Difícil - Um vermelho forte */
+      }
 
-      /* Progress information */
       .score-info {
         margin-top: 30px;
-        font-size: clamp(16px, 2.8vw, 20px); /* Tamanho de fonte responsivo */
+        font-size: clamp(16px, 2.8vw, 20px);
         display: flex;
-        flex-wrap: wrap; /* Permite que os itens quebrem */
+        flex-wrap: wrap;
         justify-content: space-around;
         padding: 15px 0;
-        border-top: 1px solid #c8d6e5; /* Borda azul clara e sutil */
+        border-top: 1px solid #c8d6e5;
         border-bottom: 1px solid #c8d6e5;
         color: #546e7a;
       }
 
       .score-info p {
-        margin: 8px 15px; /* Mais margem para espaçamento */
-        white-space: nowrap; /* Evita que os números quebrem */
+        margin: 8px 15px;
+        white-space: nowrap;
       }
 
-      /* Completion message */
       #completion-message {
         margin-top: 30px;
-        font-size: clamp(20px, 4vw, 32px); /* Tamanho de fonte responsivo */
-        color: #1abc9c; /* Um teal fresco e vibrante para a conclusão */
+        font-size: clamp(20px, 4vw, 32px);
+        color: #1abc9c;
         font-weight: bold;
         display: none;
         line-height: 1.5;
       }
 
-      /* Responsiveness for smaller screens */
       @media (max-width: 768px) {
         .content {
           padding: 20px;
-          width: 95%; /* Ocupa mais largura em telas menores */
+          width: 95%;
         }
 
         .answers button,
         .difficulty-btns button {
-          max-width: 100%; /* Empilha os botões verticalmente em telas pequenas */
+          max-width: 100%;
         }
       }
 
@@ -248,13 +234,13 @@
         .difficulty-btns button {
           padding: 10px 18px;
           font-size: clamp(14px, 3vw, 20px);
-          min-width: unset; /* Remove a largura mínima para permitir mais flexibilidade */
+          min-width: unset;
         }
 
         .score-info {
           font-size: clamp(14px, 2.8vw, 18px);
-          flex-direction: column; /* Empilha os itens em telas muito pequenas */
-          align-items: center; /* Centraliza os itens quando empilhados */
+          flex-direction: column;
+          align-items: center;
         }
 
         .score-info p {
@@ -292,13 +278,6 @@
     </div>
 
     <script>
-      // Hanzi data. Each object now includes 'difficulty' and 'lastReviewed'.
-      // 'difficulty':
-      //    0: New (never seen or rated)
-      //    1: Difficult (requires more frequent review)
-      //    2: Medium (requires review at a moderate interval)
-      //    3: Easy (requires review at a long interval)
-      // 'lastReviewed': Timestamp (milliseconds) of the last time the hanzi was reviewed and rated.
       let hanziData = [
         {
           hanzi: "不",
@@ -877,7 +856,7 @@
         {
           hanzi: "從",
           pinyin: "Cóng",
-          meaning: "by, hence, of",
+          meaning: "by means of, by, hence, of",
           difficulty: 0,
           lastReviewed: null,
         },
@@ -2284,9 +2263,8 @@
         },
       ];
 
-      let currentHanziIndex = -1; // Index of the currently displayed hanzi
-      // References to DOM elements
-      const answersContainer = document.getElementById("answers"); // Element for answer buttons
+      let currentHanziIndex = -1;
+      const answersContainer = document.getElementById("answers");
       const difficultyBtnsContainer =
         document.getElementById("difficulty-btns");
       const hanziDisplay = document.getElementById("hanzi-display");
@@ -2298,17 +2276,11 @@
       const totalHanziCount = document.getElementById("total-hanzi-count");
       const completionMessage = document.getElementById("completion-message");
 
-      /**
-       * Loads user progress from localStorage.
-       * If saved data exists, it's merged with the initial data,
-       * ensuring new hanzis in the original list are preserved.
-       */
       function loadProgress() {
         try {
           const savedData = localStorage.getItem("hanziFlowData");
           if (savedData) {
             const parsedData = JSON.parse(savedData);
-            // Update difficulty and lastReviewed properties for existing hanzis
             hanziData.forEach((hanzi) => {
               const savedHanzi = parsedData.find(
                 (d) => d.hanzi === hanzi.hanzi
@@ -2321,14 +2293,10 @@
           }
         } catch (e) {
           console.error("Error loading progress from localStorage:", e);
-          // Clear corrupted data if parsing error occurs
           localStorage.removeItem("hanziFlowData");
         }
       }
 
-      /**
-       * Saves the current hanzi state (difficulty and last review) to localStorage.
-       */
       function saveProgress() {
         try {
           localStorage.setItem("hanziFlowData", JSON.stringify(hanziData));
@@ -2337,79 +2305,104 @@
         }
       }
 
-      // Defines review intervals in milliseconds based on difficulty.
-      // These are example values for demonstration. For real use, they would be longer.
+      // GLOBAL DEFINITION: reviewIntervals is defined here and accessible everywhere.
       const reviewIntervals = {
-        0: 0, // New hanzi: show immediately
-        1: 5 * 60 * 1000, // Difficult: 5 minutes
-        2: 30 * 60 * 1000, // Medium: 30 minutes
-        3: 24 * 60 * 60 * 1000, // Easy: 1 day
+        0: 0, // Immediately due if new
+        1: 1 * 60 * 1000, // 1 minute for 'Difficult'
+        2: 3 * 60 * 1000, // 3 minutes for 'Medium'
+        3: 6 * 60 * 1000, // 6 minutes for 'Easy'
       };
 
-      /**
-       * Selects the next hanzi for review based on the spaced repetition algorithm.
-       * Prioritizes new hanzis or those overdue for review.
-       * @returns {Object|null} The hanzi object to display, or null if no hanzis are due for review.
-       */
       function getNextHanziForReview() {
-        const now = Date.now(); // Current time in milliseconds
+        const now = Date.now();
 
-        // Filter hanzis that need to be reviewed now
-        const dueHanzis = hanziData.filter((hanzi) => {
-          // If it's a new hanzi, it needs immediate review
+        // 1. First, find all Hanzis that are due for review.
+        // This includes new Hanzis (difficulty 0, lastReviewed null)
+        // and Hanzis whose next review time has passed.
+        const allDueHanzis = hanziData.filter((hanzi) => {
           if (hanzi.difficulty === 0 && hanzi.lastReviewed === null) {
-            return true;
+            return true; // New Hanzis are always considered 'due'
           }
-          // If already reviewed, check if the review time has passed
           if (hanzi.lastReviewed !== null) {
             const nextReviewTime =
               new Date(hanzi.lastReviewed).getTime() +
               reviewIntervals[hanzi.difficulty];
             return now >= nextReviewTime;
           }
-          return false; // Does not need review now
+          return false;
         });
 
-        // If there are hanzis to review, sort them by difficulty (most difficult first)
-        // and return the first one.
-        if (dueHanzis.length > 0) {
-          // Sort from most difficult (difficulty 1) to easiest (difficulty 3)
-          dueHanzis.sort((a, b) => a.difficulty - b.difficulty);
-          return dueHanzis[0];
+        // If no Hanzis are due, return null to indicate completion.
+        if (allDueHanzis.length === 0) {
+          return null;
         }
 
-        // If no hanzis are due for review at the moment, return null
-        return null;
+        // 2. Prioritise "Difficult" Hanzis (difficulty: 1) if they are due.
+        // Filter for Hanzis explicitly marked as 'Difficult' and are currently due.
+        const difficultDueHanzis = allDueHanzis.filter((h) => h.difficulty === 1);
+
+        if (difficultDueHanzis.length > 0) {
+          // If there are difficult Hanzis due, create a selection pool
+          // heavily weighted towards them. The higher the '10', the more
+          // likely a difficult hanzi will be picked over other types.
+          const weightedDifficultPool = [];
+          difficultDueHanzis.forEach((hanzi) => {
+            for (let i = 0; i < 10; i++) { // Increased weight for difficult Hanzis
+              weightedDifficultPool.push(hanzi);
+            }
+          });
+          shuffleArray(weightedDifficultPool);
+          return weightedDifficultPool[0]; // Return a randomly selected difficult hanzi
+        }
+
+        // 3. If no "Difficult" Hanzis are due, proceed with a weighted selection
+        //    from the remaining due Hanzis (new, medium, and easy).
+        // Note: Difficulty 1 (Difficult) is given a weight of 0 here because
+        // it's already handled by the higher priority check above.
+        const reviewWeights = {
+          0: 2, // New Hanzis (still weighted, but only picked if no difficult ones are due)
+          1: 0, // Difficult Hanzis are handled above, so set weight to 0 here.
+          2: 3, // Medium Hanzis
+          3: 1, // Easy Hanzis
+        };
+
+        let weightedSelectionPool = [];
+        allDueHanzis.forEach((hanzi) => {
+          const weight = reviewWeights[hanzi.difficulty];
+          // Add hanzi to the pool based on its weight.
+          // This loop will not run for difficulty 1 due to weight: 0.
+          for (let i = 0; i < weight; i++) {
+            weightedSelectionPool.push(hanzi);
+          }
+        });
+
+        // As a final fallback, if the weighted pool is empty (e.g., only difficulty 1
+        // Hanzis were due but none were selected by the initial high-priority check,
+        // or if all weights somehow led to an empty pool), pick any remaining due hanzi.
+        // This ensures the app doesn't get stuck if no Hanzis are selected by the weighted logic.
+        if (weightedSelectionPool.length === 0) {
+          shuffleArray(allDueHanzis);
+          return allDueHanzis[0];
+        }
+
+        shuffleArray(weightedSelectionPool);
+        return weightedSelectionPool[0]; // Return a randomly selected hanzi from the weighted pool
       }
 
-      /**
-       * Generates an array of meaning options, including the correct answer
-       * and some random (distractor) options.
-       * @param {string} correctMeaning The correct meaning of the hanzi.
-       * @returns {Array<string>} A shuffled array of meanings for the buttons.
-       */
       function generateAnswerOptions(correctMeaning) {
-        // Get all other meanings, excluding the correct one
         const allOtherMeanings = hanziData
           .map((item) => item.meaning)
           .filter((m) => m !== correctMeaning);
 
-        // Shuffle other meanings and pick 3 distractors
         const shuffledOtherMeanings = shuffleArray(allOtherMeanings).slice(
           0,
           3
         );
 
-        // Combine the correct meaning with distractors and shuffle everything
         const options = [correctMeaning, ...shuffledOtherMeanings];
         return shuffleArray(options);
       }
 
-      /**
-       * Shuffles an array using the Fisher-Yates algorithm.
-       * @param {Array<any>} array The array to shuffle.
-       * @returns {Array<any>} The shuffled array.
-       */
       function shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
@@ -2418,42 +2411,32 @@
         return array;
       }
 
-      /**
-       * Displays the current hanzi on the interface.
-       * Manages the visibility of interface elements (answer buttons/difficulty buttons).
-       */
       function displayCurrentHanzi() {
         const hanziToDisplay = getNextHanziForReview();
 
         if (!hanziToDisplay) {
-          // If no hanzis are due for review, display completion message
           completionMessage.style.display = "block";
-          hanziDisplay.innerText = "🎉"; // An emoji to indicate completion
+          hanziDisplay.innerText = "🎉";
           hanziDetails.style.display = "none";
-          answersContainer.style.display = "none"; // Hide answer buttons
-          difficultyBtnsContainer.style.display = "none"; // Hide difficulty buttons
-          updateCounts(); // Update counts even without hanzi to display
+          answersContainer.style.display = "none";
+          difficultyBtnsContainer.style.display = "none";
+          updateCounts();
           return;
         }
 
-        // Hide completion message if there are hanzis to display
         completionMessage.style.display = "none";
 
-        // Find the index of the hanzi to display so we can update it in the original array
         currentHanziIndex = hanziData.indexOf(hanziToDisplay);
         const currentHanzi = hanziData[currentHanziIndex];
 
-        // Update flashcard content
         hanziDisplay.innerText = currentHanzi.hanzi;
         pinyinDisplay.innerText = currentHanzi.pinyin;
         meaningDisplay.innerText = currentHanzi.meaning;
 
-        // Hide details and difficulty buttons, show answer buttons
         hanziDetails.style.display = "none";
         difficultyBtnsContainer.style.display = "none";
-        answersContainer.style.display = "flex"; // Show answer buttons
+        answersContainer.style.display = "flex";
 
-        // Generate and populate answer buttons
         const answerOptions = generateAnswerOptions(currentHanzi.meaning);
         answersContainer.innerHTML = answerOptions
           .map(
@@ -2465,77 +2448,57 @@
           )
           .join("");
 
-        updateCounts(); // Update progress counts
+        updateCounts();
       }
 
-      /**
-       * Checks the selected answer from the user.
-       * Provides visual feedback, reveals the meaning, then shows difficulty buttons.
-       * @param {HTMLElement} selectedButton The button the user clicked.
-       * @param {string} selectedAnswer The meaning selected by the user.
-       */
       function checkAnswer(selectedButton, selectedAnswer) {
         const currentHanzi = hanziData[currentHanziIndex];
         const correctAnswer = currentHanzi.meaning;
         const allAnswerButtons = answersContainer.querySelectorAll("button");
 
-        // Disable all answer buttons to prevent multiple clicks
         allAnswerButtons.forEach((button) => (button.disabled = true));
 
         if (selectedAnswer === correctAnswer) {
-          selectedButton.classList.add("correct"); // Apply green animation
+          selectedButton.classList.add("correct");
         } else {
-          selectedButton.classList.add("incorrect"); // Apply red animation
-          // Find and highlight the correct answer
+          selectedButton.classList.add("incorrect");
           allAnswerButtons.forEach((button) => {
             if (button.innerText === correctAnswer) {
-              button.style.backgroundColor = "#66bb6a"; // Verde mais suave para o correto
-              button.style.color = "white"; // Garante que o texto seja visível
+              button.style.backgroundColor = "#66bb6a";
+              button.style.color = "white";
             }
           });
         }
 
-        // Reveal pinyin and meaning
         hanziDetails.style.display = "block";
-        answersContainer.style.display = "none"; // Hide answer buttons
+        answersContainer.style.display = "none";
 
-        // After a short delay for the animation, show difficulty buttons
         setTimeout(() => {
           difficultyBtnsContainer.style.display = "flex";
-        }, 700); // Adjust time if animation is longer/shorter
+        }, 700);
       }
 
-      /**
-       * Sets the difficulty for the current hanzi, updates the last reviewed date,
-       * saves progress, and displays the next hanzi.
-       * @param {number} difficultyLevel The difficulty level (1: Difficult, 2: Medium, 3: Easy).
-       */
       function setDifficulty(difficultyLevel) {
         const currentHanzi = hanziData[currentHanziIndex];
-        currentHanzi.difficulty = difficultyLevel; // Update difficulty
-        currentHanzi.lastReviewed = Date.now(); // Set last reviewed date to now
-        saveProgress(); // Save changes to localStorage
-        displayCurrentHanzi(); // Load and display the next hanzi
+        currentHanzi.difficulty = difficultyLevel;
+        currentHanzi.lastReviewed = Date.now();
+        saveProgress();
+        displayCurrentHanzi();
       }
 
-      /**
-       * Updates the progress counts on the user interface.
-       */
       function updateCounts() {
-        // Count how many hanzis have been reviewed at least once
         const hanzisSeen = hanziData.filter(
           (h) => h.lastReviewed !== null
         ).length;
 
-        // Count how many hanzis are pending review (new or overdue)
         const hanzisToReview = hanziData.filter((hanzi) => {
           if (hanzi.difficulty === 0 && hanzi.lastReviewed === null)
-            return true; // Novo
+            return true;
           if (hanzi.lastReviewed !== null) {
             const nextReviewTime =
               new Date(hanzi.lastReviewed).getTime() +
               reviewIntervals[hanzi.difficulty];
-            return Date.now() >= nextReviewTime; // Atrasado
+            return Date.now() >= nextReviewTime;
           }
           return false;
         }).length;
@@ -2545,24 +2508,17 @@
         totalHanziCount.innerText = hanziData.length;
       }
 
-      // --- Event Listeners ---
-
-      // Add listeners for difficulty buttons
       difficultyBtnsContainer.querySelectorAll("button").forEach((button) => {
         button.addEventListener("click", (event) => {
-          // Get the difficulty level from the 'data-difficulty' attribute
           const difficulty = parseInt(event.target.dataset.difficulty);
           setDifficulty(difficulty);
         });
       });
 
-      // Initialize the application when the DOM is fully loaded
       document.addEventListener("DOMContentLoaded", () => {
-        loadProgress(); // Load saved progress
-        displayCurrentHanzi(); // Display the first hanzi
-        // Set an interval to update counts and check for new hanzis to review
-        // This is useful if the user leaves the page open for a long time
-        setInterval(updateCounts, 60 * 1000); // Every minute
+        loadProgress();
+        displayCurrentHanzi();
+        setInterval(updateCounts, 60 * 1000);
       });
     </script>
   </body>
