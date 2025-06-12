@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HanziFlow - Dynamic Memorization</title>
+    <title>Chengshilun`s Hanzis Memorization</title>
     <style>
       body {
         background-color: #e0eaf2;
@@ -29,24 +29,36 @@
         box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
         box-sizing: border-box;
         transition: all 0.3s ease-in-out;
+        position: relative; /* ADICIONADO */
+      }
+
+      /* NOVO BLOCO DE CÓDIGO CSS PARA O RELÓGIO */
+      #session-timer {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 70px;
+        height: 70px;
+        background-color: #78909c; /* Cor coesa, igual aos botões de dificuldade */
+        color: white;
+        border-radius: 50%; /* Deixa o elemento redondo */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 18px;
+        font-weight: bold;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        z-index: 10;
       }
 
       h1 {
         color: #1a5276;
         margin-bottom: 30px;
-        font-size: clamp(
-          30px,
-          5vw,
-          48px
-        );
+        font-size: clamp(30px, 5vw, 48px);
       }
 
       .hanzi-display {
-        font-size: clamp(
-          80px,
-          20vw,
-          180px
-        );
+        font-size: clamp(80px, 20vw, 180px);
         font-weight: bold;
         margin: 25px 0;
         text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
@@ -81,11 +93,7 @@
         margin: 5px;
         border-radius: 8px;
         cursor: pointer;
-        font-size: clamp(
-          16px,
-          3vw,
-          22px
-        );
+        font-size: clamp(16px, 3vw, 22px);
         transition: background-color 0.3s ease, transform 0.1s ease,
           box-shadow 0.3s ease;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
@@ -221,6 +229,14 @@
         .content {
           padding: 15px;
         }
+        
+        #session-timer {
+          width: 50px;
+          height: 50px;
+          font-size: 14px;
+          top: 15px;
+          right: 15px;
+        }
 
         .hanzi-display {
           font-size: clamp(60px, 20vw, 120px);
@@ -252,7 +268,8 @@
 
   <body>
     <div class="content">
-      <h1>HanziFlow - Dynamic Memorization</h1>
+      <div id="session-timer">0:00</div>
+      <h1>Chengshilun's Hanzis</h1>
       <div class="hanzi-display" id="hanzi-display"></div>
       <div class="hanzi-info" id="hanzi-details" style="display: none">
         <p><strong>Pinyin:</strong> <span id="pinyin-display"></span></p>
@@ -279,6 +296,7 @@
 
     <script>
       let hanziData = [
+    
         {
           hanzi: "不",
           pinyin: "Bù",
@@ -2264,6 +2282,8 @@
       ];
 
       let currentHanziIndex = -1;
+      let timerInterval = null; 
+      let sessionSeconds = 0;   
       const answersContainer = document.getElementById("answers");
       const difficultyBtnsContainer =
         document.getElementById("difficulty-btns");
@@ -2275,6 +2295,20 @@
       const hanziToReviewCount = document.getElementById("hanzi-to-review");
       const totalHanziCount = document.getElementById("total-hanzi-count");
       const completionMessage = document.getElementById("completion-message");
+
+      function startTimer() {
+        const timerElement = document.getElementById("session-timer");
+        
+        if (timerInterval) clearInterval(timerInterval);
+
+        timerInterval = setInterval(() => {
+          sessionSeconds++;
+          const minutes = Math.floor(sessionSeconds / 60);
+          const seconds = sessionSeconds % 60;
+          
+          timerElement.textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        }, 1000);
+      }
 
       function loadProgress() {
         try {
@@ -2305,8 +2339,7 @@
         }
       }
 
-      // GLOBAL DEFINITION: reviewIntervals is defined here and accessible everywhere.
-      const reviewIntervals = {
+            const reviewIntervals = {
         0: 0, // Immediately due if new
         1: 1 * 60 * 1000, // 1 minute for 'Difficult'
         2: 3 * 60 * 1000, // 3 minutes for 'Medium'
@@ -2415,6 +2448,7 @@
         const hanziToDisplay = getNextHanziForReview();
 
         if (!hanziToDisplay) {
+          clearInterval(timerInterval); // ADICIONADO: Para o relógio
           completionMessage.style.display = "block";
           hanziDisplay.innerText = "🎉";
           hanziDetails.style.display = "none";
@@ -2518,6 +2552,7 @@
       document.addEventListener("DOMContentLoaded", () => {
         loadProgress();
         displayCurrentHanzi();
+        startTimer();
         setInterval(updateCounts, 60 * 1000);
       });
     </script>
